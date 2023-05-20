@@ -9,8 +9,8 @@ require('dotenv').config()
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: "%s - Web Shop",
-    title: "Web Shop",
+    titleTemplate: "%s - Hadher",
+    title: "Hadher",
     meta: [
       { charset: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
@@ -20,7 +20,7 @@ export default {
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
-  css: ["~assets/index.scss", "~assets/global.css"],
+  css: ["~assets/global.css"],
 
   generate: {
     // Interval in milliseconds between two render cycles to avoid
@@ -67,28 +67,28 @@ export default {
     headers: { "Content-Type": "application/json" }
   },
 
-  i18n: {
-    baseUrl: "http://localhost:4000",
-    locales: [
-      {
-        code: "ar",
-        iso: "ar-AR",
-        file: "ar-AR.js"
-      },
-      {
-        code: "en",
-        iso: "en-US",
-        file: "en-US.js"
-      }
-    ],
-    // vueI18nLoader: true,
-    lazy: true,
-    langDir: "lang/",
-    defaultLocale: "ar",
-    vueI18n: {
-      fallbackLocale: "ar"
-    }
-  },
+  // i18n: {
+  //   baseUrl: "http://localhost:4000",
+  //   locales: [
+  //     {
+  //       code: "ar",
+  //       iso: "ar-AR",
+  //       file: "ar-AR.js"
+  //     },
+  //     {
+  //       code: "en",
+  //       iso: "en-US",
+  //       file: "en-US.js"
+  //     }
+  //   ],
+  //   // vueI18nLoader: true,
+  //   lazy: true,
+  //   langDir: "lang/",
+  //   defaultLocale: "ar",
+  //   vueI18n: {
+  //     fallbackLocale: "ar"
+  //   }
+  // },
 
   // proxy: {
   //   "/api": 'http://localhost:4000'
@@ -109,7 +109,7 @@ export default {
       current: "ar"
     },
     rtl: true,
-    treeShake: false,
+    treeShake: true,
     theme: {
       themes: {
         dark: {
@@ -124,7 +124,7 @@ export default {
         light: {
           background: "#f1f6fc",
           subBackground: "#F1F6FC",
-          primary: "#ffdc2c",
+          primary: "#00a4dc",
           secondary: "#409bff",
           accent: "#292D32",
           error: "#FF4C51",

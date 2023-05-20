@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-main class="bg-color">
+    <v-main class="grey lighten-5">
       <nuxt />
     </v-main>
     <!-- <Snackbar /> -->
@@ -9,22 +9,9 @@
 
 <script>
 export default {
-  name: 'None',
-  data () {
-    return {
-      clipped: false,
-      drawer: false,
-      miniVariant: false
-    }
-  },
-  mounted () {
-    this.$meta().refresh()
-  }
+  name: 'None'
 }
 </script>
 
 <style lang="scss">
-.bg-color {
-  background-color: #f1f1f1;
-}
 </style>

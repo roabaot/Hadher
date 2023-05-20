@@ -1,6 +1,6 @@
 import { extend } from 'vee-validate'
 
-import { required, max, min, email, size } from 'vee-validate/dist/rules'
+import { required, max, min, email, size, confirmed } from 'vee-validate/dist/rules'
 
 extend('required', {
   ...required,
@@ -25,4 +25,9 @@ extend('email', {
 extend('size', {
   ...size,
   message: 'حجم الصورة يجب ان يكون اقل من {size}'
+})
+
+extend('confirmed', {
+  ...confirmed,
+  message: 'تاكد من صحة كلمة المرور'
 })
