@@ -1,6 +1,6 @@
 import { extend } from 'vee-validate'
 
-import { required, max, min, email, size, confirmed } from 'vee-validate/dist/rules'
+import { required, max, min, email, size, confirmed, numeric } from 'vee-validate/dist/rules'
 
 extend('required', {
   ...required,
@@ -30,4 +30,9 @@ extend('size', {
 extend('confirmed', {
   ...confirmed,
   message: 'تاكد من صحة كلمة المرور'
+})
+
+extend('numeric', {
+  ...numeric,
+  message: 'يجب أن يكون {_field_} رقما'
 })
