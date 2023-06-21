@@ -4,13 +4,13 @@
       <v-col lg="5" md="6" sm="6" cols="12">
         <v-card class="card-shadow rounded-xl">
           <v-card-text class="pa-4">
-            <v-img src="/img/logo.png" height="160" width="400" class="mx-auto" />
-            <h2 class="text-h4 font-weight-bold text-center grey--text text--darken-4">
+            <v-img src="/img/logo.png" height="135" width="350" class="mx-auto" />
+            <h2 class="text-h5 font-weight-bold text-center grey--text text--darken-4">
               إنشاء حساب
             </h2>
 
             <div class="pt-8">
-              <v-container>
+              <v-container class="px-8">
                 <ValidationObserver ref="observer">
                   <ValidationProvider v-slot="{ errors }" name="اسم المستخدم" rules="required|min:3|max:50">
                     <v-text-field
@@ -60,7 +60,8 @@
                     x-large
                     depressed
                     class="rounded-lg"
-                    @click.stop=""
+                    :disabled="loading"
+                    @click="onSignup"
                   >
                     إنشاء حساب
                   </v-btn>
@@ -93,7 +94,24 @@ export default {
       password: '',
       passwordConfirmation: '',
       showPassword: false,
-      showPassword2: false
+      showPassword2: false,
+      loading: false
+    }
+  },
+  methods: {
+    onSignup () {
+      this.$refs.observer.validate().then((noErrors) => {
+        if (noErrors) {
+          try {
+            this.loading = true
+            this.$nuxt.$router.push('/auth/info')
+            this.loading = false
+          } catch (error) {
+            console.log(error)
+            this.loading = false
+          }
+        }
+      })
     }
   }
 }

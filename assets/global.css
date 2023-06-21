@@ -16,17 +16,17 @@ html {
   background-color: #D0D0E5;
 }
 ::-webkit-scrollbar-thumb {
-  background-color: #6868AC;
+  background-color: #00a4dc;
 }
 
 ::-moz-selection { /* Code for Firefox */
   color: white;
-  background: #6868AC;
+  background: #00a4dc;
 }
 
 ::selection {
   color: white;
-  background: #6868AC;
+  background: #00a4dc;
 }
 
 /* size */

@@ -4,8 +4,8 @@
       <v-col lg="5" md="6" sm="6" cols="12">
         <v-card class="card-shadow rounded-xl">
           <v-card-text class="pa-4">
-            <v-img src="/img/logo.png" height="160" width="400" class="mx-auto" />
-            <h2 class="text-h4 font-weight-bold text-center grey--text text--darken-4">
+            <v-img src="/img/logo.png" height="135" width="350" class="mx-auto" />
+            <h2 class="text-h5 font-weight-bold text-center grey--text text--darken-4">
               معلومات الشركة
             </h2>
 
@@ -31,7 +31,7 @@
             </div>
 
             <div class="pt-8">
-              <v-container>
+              <v-container class="px-8">
                 <ValidationObserver ref="observer">
                   <ValidationProvider v-slot="{ errors }" name="اسم الشركة" rules="required|min:3|max:50">
                     <v-text-field
@@ -53,6 +53,7 @@
                       :dir="$vuetify.rtl ? 'ltr' : 'rtl'"
                       :error-messages="errors"
                       class="rounded-lg subtitle-2"
+                      @keypress="isNumber"
                     />
                   </ValidationProvider>
                   <ValidationProvider v-slot="{ errors }" name="البريد الالكتروني" rules="required|email">
@@ -86,7 +87,7 @@
                     x-large
                     depressed
                     class="rounded-lg"
-                    @click.stop=""
+                    @click="onInfo"
                   >
                     التالي
                   </v-btn>
@@ -120,13 +121,45 @@ export default {
       companyName: '',
       phoneNumber: '',
       email: '',
-      address: ''
+      address: '',
+      loading: false
     }
   },
   methods: {
     selectedImage () {
       this.previewImg = null
       this.previewImg = URL.createObjectURL(this.uploadImg)
+    },
+    isNumber (e) {
+      let evt
+      if (e) {
+        evt = e
+      } else {
+        evt = window.event
+      }
+      if (this.phoneNumber.startsWith('0')) {
+        this.phoneNumber = this.phoneNumber.substring(1)
+      }
+      const charCode = (evt.which) ? evt.which : evt.keyCode
+      if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
+        evt.preventDefault()
+      } else {
+        return true
+      }
+    },
+    onInfo () {
+      this.$refs.observer.validate().then((noErrors) => {
+        if (noErrors) {
+          try {
+            this.loading = true
+            this.$nuxt.$router.push('/auth/mapArea')
+            this.loading = false
+          } catch (error) {
+            console.log(error)
+            this.loading = false
+          }
+        }
+      })
     }
   }
 }

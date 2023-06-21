@@ -4,14 +4,18 @@
       <v-col lg="5" md="6" sm="6" cols="12">
         <v-card class="card-shadow rounded-xl">
           <v-card-text class="pa-4">
-            <v-img src="/img/logo.png" height="160" width="400" class="mx-auto" />
-            <h2 class="text-h4 font-weight-bold text-center grey--text text--darken-4">
+            <v-img src="/img/logo.png" height="135" width="350" class="mx-auto" />
+            <h2 class="text-h5 font-weight-bold text-center grey--text text--darken-4">
               فترة العمل
             </h2>
 
             <div class="pt-8">
               <v-container>
-                <ValidationObserver ref="observer">
+                <v-form
+                  ref="form"
+                  v-model="valid"
+                  lazy-validation
+                >
                   <v-row>
                     <v-col cols="6">
                       <v-menu
@@ -26,19 +30,18 @@
                         min-width="290px"
                       >
                         <template #activator="{ on, attrs }">
-                          <ValidationProvider v-slot="{ errors }" name="بداية فترة" rules="required">
-                            <v-text-field
-                              v-model="start"
-                              label="من"
-                              :error-messages="errors"
-                              append-icon="mdi-clock-time-four-outline"
-                              readonly
-                              outlined
-                              class="rounded-lg subtitle-2"
-                              v-bind="attrs"
-                              v-on="on"
-                            />
-                          </ValidationProvider>
+                          <v-text-field
+                            v-model="start"
+                            label="من"
+                            :error-messages="errors"
+                            append-icon="mdi-clock-time-four-outline"
+                            readonly
+                            outlined
+                            class="rounded-lg subtitle-2"
+                            :rules="[v => !!v || 'بداية الفترة ضرورية']"
+                            v-bind="attrs"
+                            v-on="on"
+                          />
                         </template>
                         <v-time-picker
                           v-if="menu"
@@ -61,19 +64,18 @@
                         min-width="290px"
                       >
                         <template #activator="{ on, attrs }">
-                          <ValidationProvider v-slot="{ errors }" name="نهاية الفترة" rules="required">
-                            <v-text-field
-                              v-model="end"
-                              label="إلى"
-                              :error-messages="errors"
-                              append-icon="mdi-clock-time-four-outline"
-                              readonly
-                              outlined
-                              class="rounded-lg subtitle-2"
-                              v-bind="attrs"
-                              v-on="on"
-                            />
-                          </ValidationProvider>
+                          <v-text-field
+                            v-model="end"
+                            label="إلى"
+                            :error-messages="errors"
+                            append-icon="mdi-clock-time-four-outline"
+                            readonly
+                            outlined
+                            class="rounded-lg subtitle-2"
+                            :rules="[v => !!v || 'نهاية الفترة ضرورية']"
+                            v-bind="attrs"
+                            v-on="on"
+                          />
                         </template>
                         <v-time-picker
                           v-if="menu2"
@@ -84,7 +86,81 @@
                       </v-menu>
                     </v-col>
                   </v-row>
-                </ValidationObserver>
+                  <v-checkbox
+                    v-model="enableShift"
+                    label="تحديد فترة السماح للتحضير"
+                  ></v-checkbox>
+                  <v-expand-transition>
+                    <v-row v-show="enableShift">
+                      <v-col cols="6">
+                        <v-menu
+                          ref="menu3"
+                          v-model="menu3"
+                          :close-on-content-click="false"
+                          :nudge-right="40"
+                          :return-value.sync="startShift"
+                          transition="scale-transition"
+                          offset-y
+                          max-width="290px"
+                          min-width="290px"
+                        >
+                          <template #activator="{ on, attrs }">
+                            <v-text-field
+                              v-model="startShift"
+                              label="من"
+                              :error-messages="errors"
+                              append-icon="mdi-clock-time-four-outline"
+                              readonly
+                              outlined
+                              class="rounded-lg subtitle-2"
+                              v-bind="attrs"
+                              v-on="on"
+                            />
+                          </template>
+                          <v-time-picker
+                            v-if="menu3"
+                            v-model="startShift"
+                            full-width
+                            @click:minute="$refs.menu3.save(startShift)"
+                          />
+                        </v-menu>
+                      </v-col>
+                      <v-col cols="6">
+                        <v-menu
+                          ref="menu4"
+                          v-model="menu4"
+                          :close-on-content-click="false"
+                          :nudge-right="40"
+                          :return-value.sync="endShift"
+                          transition="scale-transition"
+                          offset-y
+                          max-width="290px"
+                          min-width="290px"
+                        >
+                          <template #activator="{ on, attrs }">
+                            <v-text-field
+                              v-model="endShift"
+                              label="إلى"
+                              :error-messages="errors"
+                              append-icon="mdi-clock-time-four-outline"
+                              readonly
+                              outlined
+                              class="rounded-lg subtitle-2"
+                              v-bind="attrs"
+                              v-on="on"
+                            />
+                          </template>
+                          <v-time-picker
+                            v-if="menu4"
+                            v-model="endShift"
+                            full-width
+                            @click:minute="$refs.menu4.save(endShift)"
+                          />
+                        </v-menu>
+                      </v-col>
+                    </v-row>
+                  </v-expand-transition>
+                </v-form>
                 <div class="my-3">
                   <v-btn
                     color="primary"
@@ -92,7 +168,7 @@
                     x-large
                     depressed
                     class="rounded-lg"
-                    @click.stop=""
+                    @click="onShift"
                   >
                     التالي
                   </v-btn>
@@ -107,24 +183,34 @@
 </template>
 
 <script>
-import {
-  ValidationObserver,
-  ValidationProvider,
-  setInteractionMode
-} from 'vee-validate'
-setInteractionMode('eager')
 export default {
   layout: 'none',
-  components: {
-    ValidationProvider,
-    ValidationObserver
-  },
   data () {
     return {
       menu: false,
       menu2: false,
       start: '',
-      end: ''
+      end: '',
+      menu3: false,
+      menu4: false,
+      startShift: '',
+      endShift: '',
+      enableShift: false
+    }
+  },
+  methods: {
+    onShift () {
+      const isValid = this.$refs.form.validate()
+      if (isValid) {
+        try {
+          this.loading = true
+          this.$nuxt.$router.push('/')
+          this.loading = false
+        } catch (error) {
+          console.log(error)
+          this.loading = false
+        }
+      }
     }
   }
 }

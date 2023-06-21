@@ -16,7 +16,7 @@ export default {
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { hid: "description", name: "description", content: "" }
     ],
-    link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }]
+    link: [{ rel: "icon", type: "image/x-icon", href: "/logo.png" }]
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
@@ -98,7 +98,11 @@ export default {
   pwa: {
     manifest: {
       lang: "en"
-    }
+    },
+    icon: {
+      source: 'static/logo.png',
+      filename: 'logo.png'
+    },
   },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
@@ -125,11 +129,12 @@ export default {
           background: "#f1f6fc",
           subBackground: "#F1F6FC",
           primary: "#00a4dc",
-          secondary: "#409bff",
+          secondary: "#00526e",
+          thirdly: "#616d71",
           accent: "#292D32",
-          error: "#FF4C51",
+          error: "#db1b0b",
           info: "#2196F3",
-          success: "#4CAF50",
+          success: "#00db8f",
           warning: "#FFC107"
         }
       }
