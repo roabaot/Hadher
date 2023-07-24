@@ -152,11 +152,41 @@
               </v-dialog>
               <v-dialog v-model="dialogDelete" max-width="500px">
                 <v-card>
-                  <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
-                  <v-card-actions>
+                  <v-card-title class="text-h5">
+                    <v-btn
+                      icon
+                      large
+                      @click="dialogDelete = false"
+                    >
+                      <v-icon>mdi-close</v-icon>
+                    </v-btn>
+                  </v-card-title>
+                  <v-card-text class="text-center mt-4 pb-12 mx-auto" style="width: 75%;">
+                    <v-icon x-large class="error--text text-h2 mb-4">
+                      mdi-alert-circle-outline
+                    </v-icon>
+                    <div class="text-center justify-center">
+                      <h2 class="title black--text">
+                        هل أنت متاكد من حذف {{ editedItem.username }}
+                      </h2>
+                    </div>
+                  </v-card-text>
+                  <v-card-actions class="px-6 pb-4">
                     <v-spacer></v-spacer>
-                    <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
-                    <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
+                    <v-btn
+                      color="error"
+                      input-value="true"
+                      text
+                      width="48%"
+                      class="rounded-lg"
+                      @click="deleteItemConfirm"
+                    >
+                      <v-icon color="error">
+                        mdi-trash-can
+                      </v-icon>
+                      حذف
+                    </v-btn>
+                    <v-btn color="primary" depressed width="48%" class="rounded-lg" @click="dialogDelete = false">تراجع</v-btn>
                     <v-spacer></v-spacer>
                   </v-card-actions>
                 </v-card>
@@ -189,7 +219,7 @@
               حذف
             </v-btn>
           </template>
-          <template v-slot:[`item.user`]="{ item }">
+          <template v-slot:[`item.username`]="{ item }">
             <v-list-item>
               <v-list-item-avatar>
                 <v-img src="/img/avatar.png"></v-img>
@@ -197,18 +227,10 @@
 
               <v-list-item-content>
                 <v-list-item-title class="text-right">
-                  {{ item.user }}
+                  {{ item.username }}
                 </v-list-item-title>
               </v-list-item-content>
             </v-list-item>
-          </template>
-          <template v-slot:no-data>
-            <v-btn
-              color="primary"
-              @click="initialize"
-            >
-              Reset
-            </v-btn>
           </template>
         </v-data-table>
       </v-card-text>

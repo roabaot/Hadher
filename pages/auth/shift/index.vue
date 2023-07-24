@@ -13,8 +13,6 @@
               <v-container>
                 <v-form
                   ref="form"
-                  v-model="valid"
-                  lazy-validation
                 >
                   <v-row>
                     <v-col cols="6">
@@ -33,7 +31,6 @@
                           <v-text-field
                             v-model="start"
                             label="من"
-                            :error-messages="errors"
                             append-icon="mdi-clock-time-four-outline"
                             readonly
                             outlined
@@ -67,7 +64,6 @@
                           <v-text-field
                             v-model="end"
                             label="إلى"
-                            :error-messages="errors"
                             append-icon="mdi-clock-time-four-outline"
                             readonly
                             outlined
@@ -108,7 +104,6 @@
                             <v-text-field
                               v-model="startShift"
                               label="من"
-                              :error-messages="errors"
                               append-icon="mdi-clock-time-four-outline"
                               readonly
                               outlined
@@ -141,7 +136,6 @@
                             <v-text-field
                               v-model="endShift"
                               label="إلى"
-                              :error-messages="errors"
                               append-icon="mdi-clock-time-four-outline"
                               readonly
                               outlined

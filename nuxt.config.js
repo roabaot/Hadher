@@ -53,6 +53,7 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/axios
     "@nuxtjs/axios",
+    '@nuxtjs/auth-next',
     // https://go.nuxtjs.dev/pwa
     "@nuxtjs/pwa",
     "cookie-universal-nuxt",
@@ -62,9 +63,9 @@ export default {
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
-    baseURL: process.env.BASE_URL || "http://localhost:3003",
+    baseURL: process.env.BASE_URL || "http://127.0.0.1:8000/api",
     timeout: 30000,
-    headers: { "Content-Type": "application/json" }
+    // headers: { "Content-Type": "application/json" }
   },
 
   // i18n: {
@@ -131,6 +132,7 @@ export default {
           primary: "#00a4dc",
           secondary: "#00526e",
           thirdly: "#616d71",
+          fourtly: "#9da4a6",
           accent: "#292D32",
           error: "#db1b0b",
           info: "#2196F3",
@@ -141,14 +143,45 @@ export default {
     }
   },
 
+  auth: {
+    rewriteRedirects: false,
+    redirect: {
+      login: '/',
+      logout: '/',
+      callback: '/',
+      home: '/'
+    },
+    cookie: {
+      options: {
+        // httpOnly: process.env.NODE_ENV === 'production',
+        // httpOnly: true,
+        expires: 1,
+        maxAge: 86400 * 7
+      }
+    },
+    strategies: {
+      local: {
+        user: {
+          property: 'user',
+          autoFetch: false
+        },
+        endpoints: {
+          login: { url: '/auth/login', method: 'post' },
+          logout: false,
+          // user: { url: '/users/user', method: 'get' }
+          user: false
+        },
+        token: {
+          property: 'access_token',
+          maxAge: 86400 * 7
+        },
+      }
+    }
+  },
+
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
     transpile: ["vee-validate/dist/rules"]
-  },
-
-  server: {
-    host: process.env.NUXT_HOST,
-    port: process.env.NUXT_PORT
   },
 
   // serverMiddleware: ['~/server-middleware/cart']

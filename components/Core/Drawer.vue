@@ -5,9 +5,10 @@
     :permanent="$vuetify.breakpoint.mdAndUp"
     :mini-variant="Mini"
     :right="$vuetify.rtl"
-    color="subbackground"
-    class="pt-5"
+    color="#fcfcfc"
+    class="pt-5 card-shadow-2"
   >
+    <v-img src="/img/logo.png" width="80%" class="mx-auto" />
     <v-list>
       <v-list-item
         active-class="primary--text"
@@ -41,27 +42,36 @@
       </v-list-item>
       <v-list-item
         active-class="primary--text"
-        to="/settings"
+        to="/attendance"
         nuxt
         exact
       >
         <v-list-item-icon>
-          <SettingIcon width="24" height="24" :color="$route.path === '/settings' ? '#00a4dc' : '#000'" />
+          <!-- <SettingIcon width="24" height="24" :color="$route.path === '/settings' ? '#00a4dc' : '#000'" /> -->
+          <OptionIcon width="24" height="24" :color="$route.path === '/attendance' ? '#00a4dc' : '#000'" />
         </v-list-item-icon>
         <v-list-item-content>
           <v-list-item-title>
-            الإعدادات
+            الحضور والانصراف
           </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
     </v-list>
+
+    <template v-slot:append>
+      <div class="py-2 px-4 mb-3">
+        <v-btn block depressed color="error white--text" class="rounded-lg">
+          تسجيل الخروج
+        </v-btn>
+      </div>
+    </template>
   </v-navigation-drawer>
 </template>
 
 <script>
 import HomeIcon from '@/components/Icons/Home.vue'
 import StaffsIcon from '@/components/Icons/Staffs.vue'
-import SettingIcon from '@/components/Icons/Setting.vue'
+import OptionIcon from '@/components/Icons/Option.vue'
 export default {
   props: {
     drawer: {
@@ -76,7 +86,7 @@ export default {
   components: {
     HomeIcon,
     StaffsIcon,
-    SettingIcon
+    OptionIcon
   },
   data () {
     return {
@@ -115,3 +125,9 @@ export default {
   }
 }
 </script>
+
+<style>
+  .theme--light.v-navigation-drawer:not(.v-navigation-drawer--floating) .v-navigation-drawer__border {
+    background-color: unset;
+  }
+</style>

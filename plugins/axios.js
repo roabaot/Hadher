@@ -16,8 +16,31 @@ export default ({ $axios, store, redirect, app }) => {
     throw error
   })
   $axios.onRequest((config) => {
-    config.withCredentials = true
+    // if (app.$cookies.get('auth.admin_token')) {
+    //   const token = app.$cookies.get('auth.admin_token')
+    //   console.log(token)
+    //   // config.headers.common.authorization = token.toString().split(' ')[1]
+    //   config.headers.common.Authorization = token
+    // }
+    config.withCredentials = false
 
     return config
   })
+
+  // auth
+  // Signup
+  $axios.$signup = (payload) => {
+    return $axios.$post('/register', payload)
+      .then((response) => {
+        return response
+      })
+  }
+
+  // Login
+  $axios.$login = (payload) => {
+    return $axios.$post('/login', payload)
+      .then((response) => {
+        return response
+      })
+  }
 }

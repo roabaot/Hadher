@@ -148,11 +148,23 @@ export default {
       }
     },
     onInfo () {
-      this.$refs.observer.validate().then((noErrors) => {
+      this.$refs.observer.validate().then(async (noErrors) => {
         if (noErrors) {
           try {
             this.loading = true
-            this.$nuxt.$router.push('/auth/mapArea')
+            const formData = new FormData()
+            formData.set('name', this.companyName)
+            formData.set('address', this.address)
+            formData.set('phonenumber', this.phoneNumber)
+            formData.set('email', this.email)
+            formData.set('image', this.uploadImg)
+            const res = await this.$axios.$post('/companies', formData, {
+              headers: {
+                Authorization: this.$cookies.get('admin_token')
+              }
+            })
+            console.log('res: ', res)
+            // this.$nuxt.$router.push('/auth/mapArea')
             this.loading = false
           } catch (error) {
             console.log(error)
