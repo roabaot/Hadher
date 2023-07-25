@@ -9,7 +9,7 @@
           class="overflow-hidden"
         >
           <template v-slot:top>
-            <StaffNewUser :dialog="infoDialog" @close="infoDialog = false" />
+            <StaffNewUser :dialog="infoDialog" :info="info" @close="infoDialog = false" />
             <v-toolbar
               flat
             >
@@ -70,7 +70,7 @@
                       <client-only>
                         <v-file-input
                           ref="uploader"
-                          v-model="uploadImg"
+                          v-model="editedItem.image"
                           accept="image/*"
                           name="صور العرض"
                           counter
@@ -92,8 +92,18 @@
                         <ValidationObserver ref="observer">
                           <ValidationProvider v-slot="{ errors }" name="اسم المستخدم" rules="required|min:3|max:50">
                             <v-text-field
-                              v-model="editedItem.username"
+                              v-model="editedItem.name"
                               label="اسم المستخدم"
+                              outlined
+                              required
+                              :error-messages="errors"
+                              class="rounded-lg subtitle-2"
+                            />
+                          </ValidationProvider>
+                          <ValidationProvider v-slot="{ errors }" name="كلمة المرور" rules="required|min:8|max:16">
+                            <v-text-field
+                              v-model="editedItem.password"
+                              label="كلمة المرور"
                               outlined
                               required
                               :error-messages="errors"
@@ -102,7 +112,7 @@
                           </ValidationProvider>
                           <ValidationProvider v-slot="{ errors }" name="رقم الهاتف" rules="required|numeric">
                             <v-text-field
-                              v-model="editedItem.phoneNumber"
+                              v-model="editedItem.phone_number"
                               label="رقم الهاتف"
                               outlined
                               required
@@ -121,7 +131,7 @@
                               class="rounded-lg subtitle-2"
                             />
                           </ValidationProvider>
-                          <ValidationProvider v-slot="{ errors }" name="عنوان الشركة" rules="required|min:3|max:100">
+                          <ValidationProvider v-slot="{ errors }" name="عنوان الشركة" rules="min:3|max:100">
                             <v-text-field
                               v-model="editedItem.address"
                               label="عنوان الشركة"
@@ -142,7 +152,7 @@
                             class="rounded-lg"
                             @click="save"
                           >
-                            التالي
+                            {{ formTitle }}
                           </v-btn>
                         </div>
                       </v-container>
@@ -167,7 +177,7 @@
                     </v-icon>
                     <div class="text-center justify-center">
                       <h2 class="title black--text">
-                        هل أنت متاكد من حذف {{ editedItem.username }}
+                        هل أنت متاكد من حذف {{ editedItem.name }}
                       </h2>
                     </div>
                   </v-card-text>
@@ -219,15 +229,16 @@
               حذف
             </v-btn>
           </template>
-          <template v-slot:[`item.username`]="{ item }">
+          <template v-slot:[`item.name`]="{ item }">
             <v-list-item>
               <v-list-item-avatar>
-                <v-img src="/img/avatar.png"></v-img>
+                <!-- <v-img src="/img/avatar.png"></v-img> -->
+                <img :src="item.image ? `http://127.0.0.1:8000/${item.image}` : '/img/avatar.png'" class="fill-size">
               </v-list-item-avatar>
 
               <v-list-item-content>
                 <v-list-item-title class="text-right">
-                  {{ item.username }}
+                  {{ item.name }}
                 </v-list-item-title>
               </v-list-item-content>
             </v-list-item>
@@ -250,35 +261,55 @@ export default {
     ValidationProvider,
     ValidationObserver
   },
+  async asyncData ({ app, $axios }) {
+    try {
+      const token = await app.$cookies.get('admin_token')
+      console.log(token)
+      const { data } = await $axios.$get('/users', {
+        headers: {
+          Authorization: await token
+        }
+      })
+      console.log('users: ', data)
+
+      return {
+        staffs: data
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  },
   data: () => ({
     dialog: false,
     infoDialog: false,
     dialogDelete: false,
     headers: [
-      { text: 'الموظف', align: 'center', value: 'username' },
+      { text: 'الموظف', align: 'center', value: 'name' },
       { text: 'الإيميل', align: 'center', value: 'email' },
-      { text: 'رقم الهاتف', align: 'center', value: 'phoneNumber' },
+      { text: 'رقم الهاتف', align: 'center', value: 'phone_number' },
       { text: '', value: 'actions', align: 'left', sortable: false }
     ],
-    staffs: [],
     editedIndex: -1,
     editedItem: {
-      avatar: '',
-      username: '',
+      image: null,
+      name: '',
+      password: '',
       email: '',
-      phoneNumber: '',
+      phone_number: '',
       address: ''
     },
     defaultItem: {
-      avatar: '',
-      username: '',
+      image: null,
+      name: '',
+      password: '',
       email: '',
-      phoneNumber: '',
+      phone_number: '',
       address: ''
     },
     search: '',
     previewImg: null,
-    uploadImg: null
+    uploadImg: null,
+    info: null
   }),
 
   computed: {
@@ -293,125 +324,21 @@ export default {
     },
     dialogDelete (val) {
       val || this.closeDelete()
+    },
+    infoDialog (val) {
+      if (val === false) {
+        this.info = null
+      }
     }
   },
 
-  created () {
-    this.initialize()
-  },
-
   methods: {
-    initialize () {
-      this.staffs = [
-        {
-          id: 1,
-          username: 'حمزة العمودي',
-          email: 'test@test.com',
-          phoneNumber: '+9645345343',
-          address: ''
-        },
-        {
-          id: 2,
-          username: 'حمزة العمودي',
-          email: 'test@test.com',
-          phoneNumber: '+9645345343',
-          address: ''
-        },
-        {
-          id: 3,
-          username: 'حمزة العمودي',
-          email: 'test@test.com',
-          phoneNumber: '+9645345343',
-          address: ''
-        },
-        {
-          id: 4,
-          username: 'حمزة العمودي',
-          email: 'test@test.com',
-          phoneNumber: '+9645345343',
-          address: ''
-        },
-        {
-          id: 5,
-          username: 'حمزة العمودي',
-          email: 'test@test.com',
-          phoneNumber: '+9645345343',
-          address: ''
-        },
-        {
-          id: 6,
-          username: 'حمزة العمودي',
-          email: 'test@test.com',
-          phoneNumber: '+9645345343',
-          address: ''
-        },
-        {
-          id: 7,
-          username: 'حمزة العمودي',
-          email: 'test@test.com',
-          phoneNumber: '+9645345343',
-          address: ''
-        },
-        {
-          id: 8,
-          username: 'حمزة العمودي',
-          email: 'test@test.com',
-          phoneNumber: '+9645345343',
-          address: ''
-        },
-        {
-          id: 9,
-          username: 'حمزة العمودي',
-          email: 'test@test.com',
-          phoneNumber: '+9645345343',
-          address: ''
-        },
-        {
-          id: 10,
-          username: 'حمزة العمودي',
-          email: 'test@test.com',
-          phoneNumber: '+9645345343',
-          address: ''
-        },
-        {
-          id: 11,
-          username: 'حمزة العمودي',
-          email: 'test@test.com',
-          phoneNumber: '+9645345343',
-          address: ''
-        },
-        {
-          id: 12,
-          username: 'حمزة العمودي',
-          email: 'test@test.com',
-          phoneNumber: '+9645345343',
-          address: ''
-        },
-        {
-          id: 13,
-          username: 'حمزة العمودي',
-          email: 'test@test.com',
-          phoneNumber: '+9645345343',
-          address: ''
-        },
-        {
-          id: 14,
-          username: 'حمزة العمودي',
-          email: 'test@test.com',
-          phoneNumber: '+9645345343',
-          address: ''
-        }
-      ]
-    },
     isNumber (e) {
       let evt
       if (e) {
         evt = e
       } else {
         evt = window.event
-      }
-      if (this.editedItem.phoneNumber.startsWith('0')) {
-        this.editedItem.phoneNumber = this.editedItem.phoneNumber.substring(1)
       }
       const charCode = (evt.which) ? evt.which : evt.keyCode
       if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
@@ -433,9 +360,19 @@ export default {
       this.dialogDelete = true
     },
 
-    deleteItemConfirm () {
-      this.staffs.splice(this.editedIndex, 1)
-      this.closeDelete()
+    async deleteItemConfirm () {
+      try {
+        const user = await this.$axios.$delete(`/users/${this.editedItem.id}`, {
+          headers: {
+            Authorization: this.$cookies.get('admin_token')
+          }
+        })
+        console.log(user)
+        this.staffs.splice(this.editedIndex, 1)
+        this.closeDelete()
+      } catch (error) {
+        console.log(error)
+      }
     },
 
     close () {
@@ -444,6 +381,7 @@ export default {
         this.$refs.observer.reset()
         this.editedItem = Object.assign({}, this.defaultItem)
         this.editedIndex = -1
+        this.previewImg = ''
       })
     },
 
@@ -456,14 +394,31 @@ export default {
     },
 
     save () {
-      this.$refs.observer.validate().then((noErrors) => {
+      this.$refs.observer.validate().then(async (noErrors) => {
         if (noErrors) {
           try {
+            const formData = new FormData()
+            for (const key in this.editedItem) {
+              formData.set(key, this.editedItem[key])
+            }
             if (this.editedIndex > -1) {
+              const res = await this.$axios.$patch(`/users/${this.editedItem.id}`, formData, {
+                headers: {
+                  Authorization: this.$cookies.get('admin_token')
+                }
+              })
+              console.log(res)
               Object.assign(this.staffs[this.editedIndex], this.editedItem)
             } else {
+              const res = await this.$axios.$post('/users', formData, {
+                headers: {
+                  Authorization: this.$cookies.get('admin_token')
+                }
+              })
+              console.log(res)
+              this.info = this.editedItem
               this.infoDialog = true
-              this.staffs.push(this.editedItem)
+              await this.staffs.push(this.editedItem)
             }
             this.close()
           } catch (error) {
@@ -474,7 +429,7 @@ export default {
     },
     selectedImage () {
       this.previewImg = null
-      this.previewImg = URL.createObjectURL(this.uploadImg)
+      this.previewImg = URL.createObjectURL(this.editedItem.image)
     }
   }
 }

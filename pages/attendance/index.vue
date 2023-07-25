@@ -201,7 +201,7 @@
               </v-col>
             </v-row>
           </template>
-          <template v-slot:[`item.username`]="{ item }">
+          <template v-slot:[`item.name`]="{ item }">
             <v-list-item>
               <v-list-item-avatar>
                 <v-img src="/img/avatar.png"></v-img>
@@ -209,7 +209,7 @@
 
               <v-list-item-content>
                 <v-list-item-title class="text-right">
-                  {{ item.username }}
+                  {{ item.name }}
                 </v-list-item-title>
               </v-list-item-content>
             </v-list-item>
@@ -266,11 +266,29 @@ export default {
     ValidationProvider,
     ValidationObserver
   },
+  async asyncData ({ app, $axios }) {
+    try {
+      const token = await app.$cookies.get('admin_token')
+      console.log(token)
+      const { data } = await $axios.$get('/users', {
+        headers: {
+          Authorization: await token
+        }
+      })
+      console.log('users: ', data)
+
+      return {
+        staffs: data
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  },
   data: () => ({
     dialog: false,
     statusDialog: false,
     headers: [
-      { text: 'الموظف', align: 'center', value: 'username' },
+      { text: 'الموظف', align: 'center', value: 'name' },
       { text: 'الحالة', align: 'center', value: 'status' },
       { text: '', value: 'actions', align: 'left', sortable: false }
     ],
@@ -318,85 +336,7 @@ export default {
     }
   },
 
-  created () {
-    this.initialize()
-  },
-
   methods: {
-    initialize () {
-      this.staffs = [
-        {
-          id: 1,
-          username: 'حمزة العمودي',
-          status: 'حاضر'
-        },
-        {
-          id: 2,
-          username: 'حمزة العمودي',
-          status: 'حاضر'
-        },
-        {
-          id: 3,
-          username: 'حمزة العمودي',
-          status: 'حاضر'
-        },
-        {
-          id: 4,
-          username: 'حمزة العمودي',
-          status: 'حاضر'
-        },
-        {
-          id: 5,
-          username: 'حمزة العمودي',
-          status: 'حاضر'
-        },
-        {
-          id: 6,
-          username: 'حمزة العمودي',
-          status: 'حاضر'
-        },
-        {
-          id: 7,
-          username: 'حمزة العمودي',
-          status: 'حاضر'
-        },
-        {
-          id: 8,
-          username: 'حمزة العمودي',
-          status: 'حاضر'
-        },
-        {
-          id: 9,
-          username: 'حمزة العمودي',
-          status: 'حاضر'
-        },
-        {
-          id: 10,
-          username: 'حمزة العمودي',
-          status: 'حاضر'
-        },
-        {
-          id: 11,
-          username: 'حمزة العمودي',
-          status: 'حاضر'
-        },
-        {
-          id: 12,
-          username: 'حمزة العمودي',
-          status: 'حاضر'
-        },
-        {
-          id: 13,
-          username: 'حمزة العمودي',
-          status: 'حاضر'
-        },
-        {
-          id: 14,
-          username: 'حمزة العمودي',
-          status: 'حاضر'
-        }
-      ]
-    },
     getColor (status) {
       if (status === 'حاضر') {
         return {

@@ -12,7 +12,7 @@
 
                 <v-list-item-content>
                   <v-list-item-title class="secondary--text">
-                    حمزة عمر العمودي
+                    {{ user.name }}
                   </v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
@@ -20,40 +20,43 @@
             <v-col md="3" cols="12">
               <div>
                 <div class="subtitle-2 mb-2">
-                  من
+                  تاريخ الإجازة
                 </div>
-                <v-menu
-                  ref="fromMenu"
-                  v-model="fromMenu"
-                  :close-on-content-click="false"
-                  :return-value.sync="fromDate"
-                  transition="scale-transition"
-                  offset-y
-                  min-width="auto"
-                >
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-combobox
+                <v-form ref="holiday">
+                  <v-menu
+                    ref="fromMenu"
+                    v-model="fromMenu"
+                    :close-on-content-click="false"
+                    :return-value.sync="fromDate"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="auto"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-combobox
+                        v-model="fromDate"
+                        solo
+                        flat
+                        outlined
+                        background-color="#f5f7f7"
+                        dense
+                        readonly
+                        :rules="[v => !!v || 'التاريخ ضروري لإضافة إجازة']"
+                        v-bind="attrs"
+                        v-on="on"
+                      ></v-combobox>
+                    </template>
+                    <v-date-picker
                       v-model="fromDate"
-                      solo
-                      flat
-                      outlined
-                      background-color="#f5f7f7"
-                      dense
-                      readonly
-                      v-bind="attrs"
-                      v-on="on"
-                    ></v-combobox>
-                  </template>
-                  <v-date-picker
-                    v-model="fromDate"
-                    no-title
-                    scrollable
-                    @change="$refs.fromMenu.save(fromDate)"
-                  />
-                </v-menu>
+                      no-title
+                      scrollable
+                      @change="$refs.fromMenu.save(fromDate)"
+                    />
+                  </v-menu>
+                </v-form>
               </div>
             </v-col>
-            <v-col md="3" cols="12">
+            <!-- <v-col md="3" cols="12">
               <div>
                 <div class="subtitle-2 mb-2">
                   إلى
@@ -88,9 +91,9 @@
                   />
                 </v-menu>
               </div>
-            </v-col>
-            <v-col md="3" cols="12" class="align-self-center">
-              <v-btn block color="primary white--text" depressed class="rounded-lg">
+            </v-col> -->
+            <v-col md="3" offset-md="3" cols="12" class="align-self-center">
+              <v-btn block color="primary white--text" depressed class="rounded-lg" @click="addHoliday">
                 <v-icon left>
                   mdi-plus
                 </v-icon>
@@ -190,7 +193,36 @@
 </template>
 
 <script>
+import {
+  ValidationObserver,
+  ValidationProvider,
+  setInteractionMode
+} from 'vee-validate'
+setInteractionMode('eager')
 export default {
+  components: {
+    ValidationProvider,
+    ValidationObserver
+  },
+  async asyncData ({ app, $axios, params }) {
+    try {
+      console.log(params)
+      const token = await app.$cookies.get('admin_token')
+      console.log(token)
+      const { data } = await $axios.$get(`/users/${params.id}`, {
+        headers: {
+          Authorization: await token
+        }
+      })
+      console.log('users: ', data)
+
+      return {
+        user: data
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  },
   data () {
     return {
       fromMenu: false,
@@ -271,11 +303,27 @@ export default {
         time: '',
         status: ''
       },
-      statusDialog: false
+      statusDialog: false,
+      status: [
+        {
+          id: 1,
+          text: 'حاضر'
+        },
+        {
+          id: 2,
+          text: 'إجازة'
+        },
+        {
+          id: 3,
+          text: 'غائب'
+        }
+      ]
     }
   },
-  dialog (val) {
-    val || this.close()
+  watch: {
+    dialog (val) {
+      val || this.close()
+    }
   },
   methods: {
     getColor (status) {
@@ -299,13 +347,13 @@ export default {
     close () {
       this.dialog = false
       this.$nextTick(() => {
-        this.$refs.observer.reset()
+        this.$refs.attendance.reset()
         this.editedItem = Object.assign({}, this.defaultItem)
         this.editedIndex = -1
       })
     },
     save () {
-      this.$refs.observer.validate().then((noErrors) => {
+      this.$refs.attendance.validate().then((noErrors) => {
         if (noErrors) {
           try {
             if (this.editedIndex > -1) {
@@ -320,6 +368,44 @@ export default {
           }
         }
       })
+    },
+    async addHoliday () {
+      try {
+        const user = await this.$axios.$post('/holidays', {
+          name: `إجازة ${this.fromDate}`,
+          holiday_date: this.fromDate,
+          user_id: this.$route.params.id
+        }, {
+          headers: {
+            Authorization: this.$cookies.get('admin_token')
+          }
+        })
+        console.log(user)
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    saveAttendance () {
+      this.$refs.attendance.validate().then(async (noErrors) => {
+        if (noErrors) {
+          try {
+            this.statusDialog = false
+            const item = this.info[this.editedIndex]
+            item.status = this.editedItem.status
+            console.log('item: ', this.editedItem)
+            this.info.splice(this.editedIndex, 1, item)
+            this.attendanceDate = ''
+            await this.close()
+          } catch (error) {
+            console.log(error)
+          }
+        }
+      })
+    },
+    editItem (item) {
+      this.editedIndex = this.info.indexOf(item)
+      this.editedItem = Object.assign({}, item)
+      this.statusDialog = true
     }
   }
 }

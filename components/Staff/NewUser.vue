@@ -32,7 +32,7 @@
                 اسم المستخدم:
               </label>
               <div class="black--text">
-                {{ info.username }}
+                {{ Info.username }}
               </div>
             </div>
             <div class="d-flex justify-evenly">
@@ -40,7 +40,7 @@
                 كلمة المرور:
               </label>
               <div class="black--text">
-                {{ info.password }}
+                {{ Info.password }}
               </div>
             </div>
           </div>
@@ -61,7 +61,7 @@ export default {
       type: Object,
       default: () => {
         return {
-          username: 'ahmed',
+          username: '',
           password: '****'
         }
       }
@@ -69,7 +69,8 @@ export default {
   },
   data () {
     return {
-      Dialog: this.dialog
+      Dialog: this.dialog,
+      Info: { ...this.info }
     }
   },
   watch: {
