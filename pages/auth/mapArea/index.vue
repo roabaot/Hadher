@@ -23,6 +23,36 @@
                       class="rounded-lg subtitle-2"
                     />
                   </ValidationProvider>
+                  <v-row>
+                    <v-col md="6" cols="12">
+                      <ValidationProvider v-slot="{ errors }" name="خط الطول" rules="required">
+                        <v-text-field
+                          v-model="longitude"
+                          label="خط الطول"
+                          :error-messages="errors"
+                          outlined
+                          required
+                          :dir="$vuetify.rtl ? 'ltr' : 'rtl'"
+                          class="rounded-lg subtitle-2"
+                          @keypress="isNumber"
+                        />
+                      </ValidationProvider>
+                    </v-col>
+                    <v-col md="6" cols="12">
+                      <ValidationProvider v-slot="{ errors }" name="خط العرض" rules="required">
+                        <v-text-field
+                          v-model="latitude"
+                          label="خط العرض"
+                          :error-messages="errors"
+                          outlined
+                          required
+                          :dir="$vuetify.rtl ? 'ltr' : 'rtl'"
+                          class="rounded-lg subtitle-2"
+                          @keypress="isNumber"
+                        />
+                      </ValidationProvider>
+                    </v-col>
+                  </v-row>
                 </ValidationObserver>
 
                 <div class="my-3">
@@ -36,7 +66,7 @@
                   >
                     التالي
                   </v-btn>
-                  <v-btn
+                  <!-- <v-btn
                     color="primary"
                     block
                     outlined
@@ -46,7 +76,7 @@
                     @click.stop=""
                   >
                     أضف موقع أخر
-                  </v-btn>
+                  </v-btn> -->
                 </div>
               </v-container>
             </div>
@@ -74,23 +104,64 @@ export default {
     return {
       uploadImg: null,
       previewImg: null,
-      companyName: '',
-      phoneNumber: '',
-      email: '',
       address: '',
+      longitude: '',
+      latitude: '',
       loading: false
     }
   },
+  computed: {
+    company () {
+      return this.$cookies.get('company')
+    },
+    user () {
+      return this.$cookies.get('admin')
+    }
+  },
   methods: {
+    isNumber (e) {
+      let evt
+      if (e) {
+        evt = e
+      } else {
+        evt = window.event
+      }
+      const charCode = (evt.which) ? evt.which : evt.keyCode
+      if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
+        evt.preventDefault()
+      } else {
+        return true
+      }
+    },
     selectedImage () {
       this.previewImg = null
       this.previewImg = URL.createObjectURL(this.uploadImg)
     },
     onMap () {
-      this.$refs.observer.validate().then((noErrors) => {
+      this.$refs.observer.validate().then(async (noErrors) => {
         if (noErrors) {
           try {
             this.loading = true
+            const data = {
+              company_id: this.company.id,
+              user_id: this.user.id,
+              name: this.address,
+              latitude: parseFloat(this.latitude),
+              longitude: parseFloat(this.longitude)
+            }
+            const res = await this.$axios.$post('/areas', data, {
+              headers: {
+                Authorization: this.$cookies.get('admin_token')
+              },
+              params: {
+                company_id: this.company.id,
+                user_id: this.user.id,
+                name: this.address,
+                latitude: parseFloat(this.latitude),
+                longitude: parseFloat(this.longitude)
+              }
+            })
+            console.log('res: ', res)
             this.$nuxt.$router.push('/auth/shift')
             this.loading = false
           } catch (error) {

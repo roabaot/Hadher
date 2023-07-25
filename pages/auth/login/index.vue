@@ -101,13 +101,12 @@ export default {
             // const login = await this.$auth.loginWith('local', {
             //   data
             // })
-            let res = null
+            const res = await this.$axios.$get('/login', { auth: data })
+            this.$cookies.set('admin', res.data)
+            localStorage.setItem('admin', res.data)
+            this.$cookies.set('admin_token', 'Bearer ' + res.access_token)
+            localStorage.setItem('admin_token', 'Bearer ' + res.access_token)
             if (this.username === 'hadher@gmail.com' && this.password === '12345678') {
-              res = await this.$axios.$get('/login', { auth: data })
-              this.$cookies.set('admin', res.data)
-              localStorage.setItem('admin', res.data)
-              this.$cookies.set('admin_token', 'Bearer ' + res.access_token)
-              localStorage.setItem('admin_token', 'Bearer ' + res.access_token)
               // await this.$auth.$storage.setUniversal('admin', res.data, true)
               // await this.$auth.$storage.setUniversal('admin_token', 'Bearer ' + res.access_token, true)
               // await this.$axios.setHeader('Authorization', 'Bearer ' + res.access_token)

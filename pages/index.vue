@@ -19,7 +19,7 @@
                     اسم الشركة
                   </label>
                   <h2 class="secondary--text title">
-                    شركة ترانس للتقنية
+                    {{ company.name }}
                   </h2>
                 </div>
                 <v-row class="ma-0">
@@ -29,7 +29,7 @@
                         رقم الهاتف
                       </label>
                       <h2 class="secondary--text title">
-                        +967476547
+                        {{ company.phone_number }}
                       </h2>
                     </div>
                   </v-col>
@@ -39,7 +39,7 @@
                         الإيميل
                       </label>
                       <h2 class="secondary--text title">
-                        test@test.com
+                        {{ company.email }}
                       </h2>
                     </div>
                   </v-col>
@@ -49,7 +49,7 @@
                         العنوان
                       </label>
                       <h2 class="secondary--text title">
-                        ABC@gmail.com
+                        {{ company.address }}
                       </h2>
                     </div>
                   </v-col>
@@ -191,17 +191,29 @@
 
 <script>
 export default {
-  async asyncData ({ $axios }) {
+  async asyncData ({ app, $axios }) {
     try {
-      const res = await $axios.$get('http://127.0.0.1:8000/api/users')
-      console.log(res)
+      const _company = app.$cookies.get('company')
+      const company = await $axios.$get(`/companies/${_company.id}`)
+      console.log(company)
+      const _user = app.$cookies.get('admin')
+      const user = await $axios.$get(`/users/${_user.id}`, {
+        headers: {
+          Authorization: app.$cookies.get('admin_token')
+        }
+      })
+      console.log(user)
+      return {
+        company: company.data,
+        user: user.data,
+        previewImg: `http://127.0.0.1:8000/${company.data.image}`
+      }
     } catch (error) {
       console.log(error)
     }
   },
   data () {
     return {
-      previewImg: null
     }
   }
 }

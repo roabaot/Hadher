@@ -164,7 +164,9 @@ export default {
               }
             })
             console.log('res: ', res)
-            // this.$nuxt.$router.push('/auth/mapArea')
+            this.$cookies.set('company', res.data)
+            localStorage.setItem('company', res.data)
+            this.$nuxt.$router.push('/auth/mapArea')
             this.loading = false
           } catch (error) {
             console.log(error)

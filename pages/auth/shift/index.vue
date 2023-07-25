@@ -14,7 +14,14 @@
                 <v-form
                   ref="form"
                 >
-                  <v-row>
+                <v-text-field
+                  v-model="name"
+                  label="نوع الفترة"
+                  outlined
+                  class="rounded-lg subtitle-2"
+                  :rules="[v => !!v || 'نوع الفترة ضروري']"
+                />
+                  <v-row class="mt-3">
                     <v-col cols="6">
                       <v-menu
                         ref="menu"
@@ -183,6 +190,7 @@ export default {
     return {
       menu: false,
       menu2: false,
+      name: '',
       start: '',
       end: '',
       menu3: false,
@@ -192,12 +200,65 @@ export default {
       enableShift: false
     }
   },
+  mounted () {
+    const date = new Date()
+    // const year = date.getFullYear()
+    // const month = date.getMonth() + 1
+    // const day = date.getDate()
+    // console.log(`${year}/${month}/${day}`)
+    // const hour = date.setHours(3)
+    // console.log(`${year}/${month}/${day}`)
+    // console.log(date.getHours(hour))
+
+    console.log(date.toLocaleString())
+    date.setHours(13, 47, 0)
+    console.log(date.toLocaleString())
+    console.log(date.toISOString())
+    console.log(date.toLocaleString())
+    // console.log(this.diff('10:00', '12:30'))
+  },
+  computed: {
+    company () {
+      return this.$cookies.get('company')
+    },
+    user () {
+      return this.$cookies.get('admin')
+    }
+  },
   methods: {
-    onShift () {
+    async onShift () {
       const isValid = this.$refs.form.validate()
       if (isValid) {
         try {
           this.loading = true
+          const date = new Date()
+          const year = date.getFullYear()
+          const month = date.getMonth() + 1
+          const day = date.getDate()
+          const hour = this.start.split(':')[0]
+          const minute = this.start.split(':')[1]
+          const _date = new Date(`${year}-${month}-${day} ${hour}:${minute}:0`)
+          console.log('hour: ', hour)
+          console.log('minute: ', minute)
+          date.setHours(hour, minute, 0)
+          const period = this.diff(this.start, this.end)
+          const grace = this.diff(this.startShift, this.endShift)
+          const data = {
+            company_id: this.company.id,
+            name: this.name,
+            start_period: `${_date.toISOString().substring(0, 10)} ${_date.toISOString().substring(11, 19)}`,
+            period: parseInt((period.split(':')[0] * 60) + period.split(':')[1]),
+            grace_period: parseInt((grace.split(':')[0] * 60) + grace.split(':')[1])
+          }
+          // console.log(this.start)
+          // console.log(this.end)
+          console.log('data: ', data)
+          const res = await this.$axios.$post('/shifts', data, {
+            headers: {
+              Authorization: this.$cookies.get('admin_token')
+            }
+          })
+          console.log('res: ', res)
           this.$nuxt.$router.push('/')
           this.loading = false
         } catch (error) {
@@ -205,6 +266,21 @@ export default {
           this.loading = false
         }
       }
+    },
+    diff (start, end) {
+      start = start.split(':')
+      end = end.split(':')
+      const startDate = new Date(0, 0, 0, start[0], start[1], 0)
+      const endDate = new Date(0, 0, 0, end[0], end[1], 0)
+      let diff = endDate.getTime() - startDate.getTime()
+      let hours = Math.floor(diff / 1000 / 60 / 60)
+      diff -= hours * 1000 * 60 * 60
+      const minutes = Math.floor(diff / 1000 / 60)
+
+      if (hours < 0) {
+        hours = hours + 24
+      }
+      return hours + ':' + minutes
     }
   }
 }
