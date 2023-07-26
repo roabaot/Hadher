@@ -137,9 +137,6 @@ export default {
       } else {
         evt = window.event
       }
-      if (this.phoneNumber.startsWith('0')) {
-        this.phoneNumber = this.phoneNumber.substring(1)
-      }
       const charCode = (evt.which) ? evt.which : evt.keyCode
       if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
         evt.preventDefault()
@@ -155,7 +152,7 @@ export default {
             const formData = new FormData()
             formData.set('name', this.companyName)
             formData.set('address', this.address)
-            formData.set('phonenumber', this.phoneNumber)
+            formData.set('phone_number', this.phoneNumber)
             formData.set('email', this.email)
             formData.set('image', this.uploadImg)
             const res = await this.$axios.$post('/companies', formData, {

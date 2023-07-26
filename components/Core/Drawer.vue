@@ -60,7 +60,7 @@
 
     <template v-slot:append>
       <div class="py-2 px-4 mb-3">
-        <v-btn block depressed color="error white--text" class="rounded-lg">
+        <v-btn block depressed color="error white--text" class="rounded-lg" @click="signout">
           تسجيل الخروج
         </v-btn>
       </div>
@@ -119,6 +119,15 @@ export default {
     //   this.$router.push('/login')
     //   this.$store.commit('clearUser')
     // }
+    signout () {
+      try {
+        this.$cookies.remove('admin_token')
+        this.$cookies.remove('admin')
+        this.$router.push('/auth/login')
+      } catch (error) {
+        console.log(error)
+      }
+    }
   },
   mounted () {
     console.log(this.$route)

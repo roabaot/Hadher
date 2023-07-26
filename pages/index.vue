@@ -4,13 +4,14 @@
       <h1 class="secondary--text text-h5 font-weight-bold">
         الرئيسية
       </h1>
-      <!-- <div class="mt-6">
+      <div class="mt-6">
         <v-card rounded="xl" class="card-shadow">
           <v-card-text>
             <v-row class="ma-0">
               <v-col md="2" cols="12">
                 <v-avatar size="110" class="avatar">
-                  <v-img :src="previewImg ? previewImg : '/logo.png'" class="fill-size" />
+                  <!-- <v-img :src="previewImg ? previewImg : '/logo.png'" class="fill-size" /> -->
+                  <v-img src="/logo.png" class="fill-size" />
                 </v-avatar>
               </v-col>
               <v-col md="8" cols="12">
@@ -56,22 +57,114 @@
                 </v-row>
               </v-col>
               <v-col md="2" cols="12" class="text-left">
-                <v-btn
-                  color="primary"
-                  outlined
-                  :block="$vuetify.breakpoint.smAndDown"
-                  class="subtitle-2"
+                <v-dialog
+                  v-model="companyDialog"
+                  class="overflow-hidden"
+                  max-width="500px"
                 >
-                  <v-icon color="primary" left>
-                    mdi-pencil
-                  </v-icon>
-                  تعديل
-                </v-btn>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                    color="primary"
+                    outlined
+                    small
+                    :block="$vuetify.breakpoint.smAndDown"
+                    class="subtitle-2"
+                      v-bind="attrs"
+                      v-on="on"
+                    >
+                    <v-icon color="primary" left>
+                      mdi-pencil
+                    </v-icon>
+                    تعديل
+                    </v-btn>
+                  </template>
+                  <v-card class="d-flex flex-column overflow-hidden">
+                    <v-card-title>
+                      <v-btn
+                        icon
+                        @click="companyDialog = false"
+                        class="ml-1"
+                      >
+                        <v-icon>mdi-close</v-icon>
+                      </v-btn>
+                      <span class="text-h5">تعديل معلومات الشركة</span>
+                    </v-card-title>
+
+                    <v-card-text class="overflow-auto">
+                      <v-container class="px-8">
+                        <ValidationObserver ref="company">
+                          <ValidationProvider v-slot="{ errors }" name="اسم الشركة" rules="required|min:3|max:50">
+                            <v-text-field
+                              v-model="companyInfo.name"
+                              solo
+                              flat
+                              outlined
+                              label="اسم الشركة"
+                              hide-details="auto"
+                              :error-messages="errors"
+                              class="rounded-lg mb-3"
+                            />
+                          </ValidationProvider>
+                          <ValidationProvider v-slot="{ errors }" name="رقم الهاتف" rules="required|min:3|max:12">
+                            <v-text-field
+                              v-model="companyInfo.phone_number"
+                              solo
+                              flat
+                              outlined
+                              label="رقم الهاتف"
+                              hide-details="auto"
+                              :error-messages="errors"
+                              class="rounded-lg mb-3"
+                              @keypress="isNumber"
+                            />
+                          </ValidationProvider>
+                          <ValidationProvider v-slot="{ errors }" name="البريد الالكتروني" rules="required|email">
+                            <v-text-field
+                              v-model="companyInfo.email"
+                              solo
+                              flat
+                              outlined
+                              label="البريد الالكتروني"
+                              hide-details="auto"
+                              :error-messages="errors"
+                              class="rounded-lg mb-3"
+                            />
+                          </ValidationProvider>
+                          <ValidationProvider v-slot="{ errors }" name="عنوان الشركة" rules="required|min:3|max:50">
+                            <v-text-field
+                              v-model="companyInfo.address"
+                              solo
+                              flat
+                              outlined
+                              label="عنوان الشركة"
+                              hide-details="auto"
+                              :error-messages="errors"
+                              class="rounded-lg mb-3"
+                            />
+                          </ValidationProvider>
+                        </ValidationObserver>
+
+                        <div class="my-3">
+                          <v-btn
+                            color="primary"
+                            block
+                            x-large
+                            depressed
+                            class="rounded-lg"
+                            @click="saveCompany"
+                          >
+                            حفظ
+                          </v-btn>
+                        </div>
+                      </v-container>
+                    </v-card-text>
+                  </v-card>
+                </v-dialog>
               </v-col>
             </v-row>
           </v-card-text>
         </v-card>
-      </div> -->
+      </div>
     </div>
     <div class="my-6">
       <v-row class="my-0">
@@ -86,7 +179,7 @@
 
               <v-spacer />
 
-              <v-dialog
+              <!-- <v-dialog
                 v-model="addressDialog"
                 class="overflow-hidden"
                 max-width="500px"
@@ -151,7 +244,7 @@
                     </v-container>
                   </v-card-text>
                 </v-card>
-              </v-dialog>
+              </v-dialog> -->
             </v-card-title>
             <v-card-text>
               <v-list three-line class="pa-0">
@@ -161,8 +254,7 @@
                       عنوان الشركة
                     </v-list-item-title>
                     <v-list-item-subtitle class="secondary--text title">
-                      اليمن ,حضرموت , المكلا ...الديس ,شارع الشهداء4848
-                      اليمن ,حضرموت , المكلا ...الديس ,شارع الشهداء4848
+                      {{ address }}
                     </v-list-item-subtitle>
                   </v-list-item-content>
                 </v-list-item>
@@ -181,7 +273,7 @@
 
               <v-spacer />
 
-              <v-btn
+              <!-- <v-btn
                 color="primary"
                 outlined
                 small
@@ -192,7 +284,7 @@
                   mdi-pencil
                 </v-icon>
                 تعديل
-              </v-btn>
+              </v-btn> -->
             </v-card-title>
             <v-card-text>
               <label class="fourtly--text title">
@@ -215,7 +307,7 @@
 
               <v-spacer />
 
-              <v-btn
+              <!-- <v-btn
                 color="primary"
                 outlined
                 small
@@ -226,14 +318,14 @@
                   mdi-pencil
                 </v-icon>
                 تعديل
-              </v-btn>
+              </v-btn> -->
             </v-card-title>
             <v-card-text>
               <label class="fourtly--text title">
                 عدد موظفين الشركة
               </label>
               <h2 class="secondary--text title">
-                <span class="ml-2">105</span><span>موظف</span>
+                <span class="ml-2">{{ staffNum }}</span><span>موظف</span>
               </h2>
             </v-card-text>
           </v-card>
@@ -265,15 +357,29 @@ export default {
           Authorization: app.$cookies.get('admin_token')
         }
       })
-      console.log(user)
-      const _company = app.$cookies.get('company')
-      console.log('_company: ', _company)
-      const company = await $axios.$get(`/companies/${_company.id}`)
-      console.log(company)
+      const resUsers = await $axios.$get('/users', {
+        headers: {
+          Authorization: app.$cookies.get('admin_token')
+        }
+      })
+      console.log('users: ', resUsers)
+      // const _company = app.$cookies.get('company')
+      // console.log('_company: ', _company)
+      // const company = await $axios.$get(`/companies/${_company.id}`)
+      // console.log(company)
+      const { data } = await $axios.$get('/companies')
+      console.log('companies: ', data)
+      const company = data[data.length - 1]
+      console.log('company: ', company)
+      const shift = await $axios.$get('/companies')
+      console.log('shift: ', shift)
       return {
-        company: company.data,
+        company,
+        companyInfo: company,
+        address: company.address,
         user: user.data,
-        previewImg: `http://127.0.0.1:8000/${company.data.image}`
+        staffNum: resUsers.data.length
+        // previewImg: `http://127.0.0.1:8000/${company.data.image}`
       }
     } catch (error) {
       console.log(error)
@@ -281,12 +387,26 @@ export default {
   },
   data () {
     return {
+      companyDialog: false,
       addressDialog: false,
-      address: '',
       loading: false
     }
   },
   methods: {
+    isNumber (e) {
+      let evt
+      if (e) {
+        evt = e
+      } else {
+        evt = window.event
+      }
+      const charCode = (evt.which) ? evt.which : evt.keyCode
+      if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
+        evt.preventDefault()
+      } else {
+        return true
+      }
+    },
     saveAddress () {
       this.$refs.address.validate().then(async (noErrors) => {
         if (noErrors) {
@@ -295,6 +415,30 @@ export default {
             await console.log(this.address)
             this.loading = false
             this.addressDialog = false
+          } catch (error) {
+            console.log(error)
+          }
+        }
+      })
+    },
+    saveCompany () {
+      this.$refs.company.validate().then(async (noErrors) => {
+        if (noErrors) {
+          try {
+            this.loading = true
+            const formData = new FormData()
+            for (const key in this.companyInfo) {
+              formData.set(key, this.companyInfo[key])
+            }
+            const company = await this.$axios.$patch(`/companies/${this.companyInfo.id}`, formData, {
+              headers: {
+                Authorization: this.$cookies.get('admin_token')
+              }
+            })
+            console.log(company)
+            this.company = this.companyInfo
+            this.loading = false
+            this.companyDialog = false
           } catch (error) {
             console.log(error)
           }

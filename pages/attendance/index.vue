@@ -54,12 +54,24 @@
                     عدد الحضور
                   </div>
                   <div class="secondary--text title">
-                    22
+                    3
                   </div>
                 </div>
               </v-col>
               <v-col md="3" cols="12" class="align-self-center">
-                <v-dialog
+                <v-btn
+                  block
+                  color="primary white--text"
+                  depressed
+                  class="rounded-lg"
+                  @click="addHoliday"
+                >
+                  <v-icon left>
+                    mdi-plus
+                  </v-icon>
+                  إضافة إجازة
+                </v-btn>
+                <!-- <v-dialog
                   v-model="dialog"
                   class="overflow-hidden"
                   max-width="500px"
@@ -144,7 +156,7 @@
                       </v-container>
                     </v-card-text>
                   </v-card>
-                </v-dialog>
+                </v-dialog> -->
                 <v-dialog
                   v-model="statusDialog"
                   class="overflow-hidden"
@@ -370,6 +382,24 @@ export default {
       })
     },
 
+    addHoliday () {
+      try {
+        this.staffs.forEach(async (user) => {
+          const holiday = await this.$axios.$post('/holidays', {
+            name: `إجازة ${this.date} لـ ${user.name}, بالتوقيت ${new Date()}`,
+            holiday_date: this.date,
+            user_id: user.id
+          }, {
+            headers: {
+              Authorization: this.$cookies.get('admin_token')
+            }
+          })
+          console.log(holiday)
+        })
+      } catch (error) {
+        console.log(error)
+      }
+    },
     async saveVacation () {
       try {
         this.dialog = false
