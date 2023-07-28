@@ -1,5 +1,5 @@
 <template>
-  <v-container class="pa-12">
+  <v-container :class="['pa-12', !$vuetify.breakpoint.mdAndUp ? 'pt-0' : '']">
     <v-card outlined class="card">
       <v-card-text>
         <v-data-table
@@ -72,98 +72,12 @@
                   </v-icon>
                   إضافة إجازة
                 </v-btn>
-                <!-- <v-dialog
-                  v-model="dialog"
-                  class="overflow-hidden"
-                  max-width="500px"
-                >
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-btn
-                      block
-                      color="primary white--text"
-                      depressed
-                      class="rounded-lg"
-                      v-bind="attrs"
-                      v-on="on"
-                    >
-                      <v-icon left>
-                        mdi-plus
-                      </v-icon>
-                      إضافة إجازة
-                    </v-btn>
-                  </template>
-                  <v-card class="d-flex flex-column overflow-hidden">
-                    <v-card-title>
-                      <v-btn
-                        icon
-                        @click="dialog = false"
-                        class="ml-1"
-                      >
-                        <v-icon>mdi-close</v-icon>
-                      </v-btn>
-                      <span class="text-h5">إضافة إجازة</span>
-                    </v-card-title>
-
-                    <v-card-text class="overflow-auto">
-                      <v-container class="px-8">
-                        <ValidationObserver ref="vacation">
-                          <v-menu
-                            ref="vacationMenu"
-                            v-model="vacationMenu"
-                            :close-on-content-click="false"
-                            :return-value.sync="vacationDate"
-                            transition="scale-transition"
-                            offset-y
-                            min-width="auto"
-                          >
-                            <template v-slot:activator="{ on, attrs }">
-                              <ValidationProvider v-slot="{ errors }" name="تاريخ الاجازة" rules="required">
-                                <v-combobox
-                                  v-model="vacationDate"
-                                  solo
-                                  flat
-                                  outlined
-                                  label="تاريخ الاجازة"
-                                  hide-details="auto"
-                                  readonly
-                                  :error-messages="errors"
-                                  class="rounded-lg"
-                                  v-bind="attrs"
-                                  v-on="on"
-                                ></v-combobox>
-                              </ValidationProvider>
-                            </template>
-                            <v-date-picker
-                              v-model="vacationDate"
-                              no-title
-                              scrollable
-                              @change="$refs.vacationMenu.save(vacationDate)"
-                            />
-                          </v-menu>
-                        </ValidationObserver>
-
-                        <div class="my-3">
-                          <v-btn
-                            color="primary"
-                            block
-                            x-large
-                            depressed
-                            class="rounded-lg"
-                            @click="saveVacation"
-                          >
-                            التالي
-                          </v-btn>
-                        </div>
-                      </v-container>
-                    </v-card-text>
-                  </v-card>
-                </v-dialog> -->
                 <v-dialog
                   v-model="statusDialog"
-                  class="overflow-hidden"
+                  class="overflow-hidden rounded-lgh"
                   max-width="500px"
                 >
-                  <v-card class="d-flex flex-column overflow-hidden">
+                  <v-card class="d-flex flex-column overflow-hidden rounded-lgh">
                     <v-card-title>
                       <v-btn
                         icon

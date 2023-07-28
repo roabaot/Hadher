@@ -122,11 +122,6 @@ export default {
     }
   },
   methods: {
-    // logout () {
-    //   // await this.$auth.logout()
-    //   this.$router.push('/login')
-    //   this.$store.commit('clearUser')
-    // }
     signout () {
       try {
         this.loading = true

@@ -1,5 +1,5 @@
 <template>
-  <v-container class="pa-12">
+  <v-container :class="['pa-12', !$vuetify.breakpoint.mdAndUp ? 'pt-0' : '']">
     <v-card outlined class="card">
       <v-card-text>
         <v-data-table
@@ -19,6 +19,7 @@
               <v-spacer />
 
               <v-text-field
+                v-if="$vuetify.breakpoint.mdAndUp"
                 v-model="search"
                 solo
                 prepend-inner-icon="mdi-magnify"
@@ -40,15 +41,15 @@
                   <v-btn
                     color="primary"
                     dark
-                    class="mb-2 rounded-lg"
+                    :class="['rounded-lg', $vuetify.breakpoint.mdAndUp ? 'mb-2' : '']"
                     depressed
                     v-bind="attrs"
                     v-on="on"
                   >
-                    <v-icon :class="$vuetify.rtl ? 'ml-3' : 'mr-3'">
+                    <v-icon :class="$vuetify.breakpoint.mdAndUp ? $vuetify.rtl ? 'ml-3' : 'mr-3' : ''">
                       mdi-plus
                     </v-icon>
-                    <span>
+                    <span v-if="$vuetify.breakpoint.mdAndUp">
                       إضافة موظف
                     </span>
                   </v-btn>

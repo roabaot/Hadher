@@ -94,3 +94,7 @@ html {
 .card-shadow-2 {
   box-shadow: -5px 0 15px 0 rgba(0, 33, 44, 0.06);
 }
+
+.v-dialog {
+  border-radius: 20px !important;
+}

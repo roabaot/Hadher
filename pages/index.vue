@@ -1,5 +1,5 @@
 <template>
-  <v-container class="pa-12">
+  <v-container :class="['pa-12', !$vuetify.breakpoint.mdAndUp ? 'pt-0' : '']">
     <div>
       <h1 class="secondary--text text-h5 font-weight-bold">
         الرئيسية
