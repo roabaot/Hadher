@@ -74,7 +74,7 @@ import {
 setInteractionMode('eager')
 export default {
   layout: 'none',
-  middleware: 'isAuth',
+  // middleware: 'isAuth',
   components: {
     ValidationProvider,
     ValidationObserver
@@ -93,11 +93,6 @@ export default {
         if (noErrors) {
           try {
             this.loading = true
-            const data = {
-              username: this.username,
-              password: this.password
-            }
-            console.log(data)
             this.$nuxt.$router.push('/')
             this.loading = false
           } catch (error) {

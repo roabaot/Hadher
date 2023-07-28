@@ -344,7 +344,7 @@ import {
 } from 'vee-validate'
 setInteractionMode('eager')
 export default {
-  middleware: 'isAuth',
+  // middleware: 'isAuth',
   components: {
     ValidationProvider,
     ValidationObserver

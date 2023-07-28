@@ -60,7 +60,14 @@
 
     <template v-slot:append>
       <div class="py-2 px-4 mb-3">
-        <v-btn block depressed color="error white--text" class="rounded-lg" @click="signout">
+        <v-btn
+          block
+          depressed
+          color="error white--text"
+          class="rounded-lg"
+          :disabled="loading"
+          @click="signout"
+        >
           تسجيل الخروج
         </v-btn>
       </div>
@@ -90,6 +97,7 @@ export default {
   },
   data () {
     return {
+      loading: false
     }
   },
   computed: {
@@ -121,9 +129,9 @@ export default {
     // }
     signout () {
       try {
-        this.$cookies.remove('admin_token')
-        this.$cookies.remove('admin')
+        this.loading = true
         this.$router.push('/auth/login')
+        this.loading = false
       } catch (error) {
         console.log(error)
       }
