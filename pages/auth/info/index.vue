@@ -21,7 +21,7 @@
                   class="d-none"
                   @change="selectedImage"
                 />
-                <v-avatar size="110" class="avatar" @click="$refs.uploader.$refs.input.click()">
+                <v-avatar size="110" :class="previewImg ? 'avatar-solid' : 'avatar-dashed'" @click="$refs.uploader.$refs.input.click()">
                   <v-img v-if="previewImg" :src="previewImg" />
                   <v-icon v-else color="primary">
                     mdi-camera-plus
@@ -145,24 +145,10 @@ export default {
       }
     },
     onInfo () {
-      this.$refs.observer.validate().then(async (noErrors) => {
+      this.$refs.observer.validate().then((noErrors) => {
         if (noErrors) {
           try {
             this.loading = true
-            const formData = new FormData()
-            formData.set('name', this.companyName)
-            formData.set('address', this.address)
-            formData.set('phone_number', this.phoneNumber)
-            formData.set('email', this.email)
-            formData.set('image', this.uploadImg)
-            const res = await this.$axios.$post('/companies', formData, {
-              headers: {
-                Authorization: this.$cookies.get('admin_token')
-              }
-            })
-            console.log('res: ', res)
-            this.$cookies.set('company', res.data)
-            localStorage.setItem('company', res.data)
             this.$nuxt.$router.push('/auth/mapArea')
             this.loading = false
           } catch (error) {
@@ -177,8 +163,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.avatar {
+.avatar-dashed {
   border: 2px dashed #00a4dc;
+  cursor: pointer;
+}
+.avatar-solid {
+  border: 2px solid #00a4dc;
   cursor: pointer;
 }
 </style>

@@ -11,11 +11,6 @@
 
             <div class="pt-8">
               <v-container class="px-8">
-                <!-- <v-window v-model="step">
-                  <v-window-item :value="1">
-                    <UserData @step1="onStep1($event)" />
-                  </v-window-item>
-                </v-window> -->
                 <ValidationObserver ref="observer">
                   <ValidationProvider v-slot="{ errors }" name="اسم المستخدم" rules="required|min:3|max:50">
                     <v-text-field
@@ -127,40 +122,11 @@ export default {
     }
   },
   methods: {
-    // onStep1 (item) {
-    //   this.username = item.username
-    //   this.password = item.password
-    //   this.step = 2
-    // },
     onSignup () {
-      this.$refs.observer.validate().then(async (noErrors) => {
+      this.$refs.observer.validate().then((noErrors) => {
         if (noErrors) {
           try {
-            // const data = {
-            // }
             this.loading = true
-            console.log(this.$cookies.get('admin_token'))
-            const res = await this.$axios.$post('/users', this.data, {
-              headers: {
-                Authorization: this.$cookies.get('admin_token')
-              }
-            })
-            console.log(res)
-            const loginRes = await this.$axios.$get('/login', {
-              auth: {
-                username: this.data.email,
-                password: this.data.password
-              }
-            })
-            console.log('login: ', loginRes)
-            this.$cookies.set('admin', this.data)
-            localStorage.setItem('admin', this.data)
-            this.$cookies.set('admin_token', this.$cookies.get('admin_token'))
-            localStorage.setItem('admin_token', this.$cookies.get('admin_token'))
-            // await this.$auth.$storage.setUniversal('admin', this.data, true)
-            // await this.$auth.$storage.setUniversal('admin_token', 'Bearer ' + this.$cookies.get('auth.admin_token'), true)
-            // await this.$axios.setHeader('Authorization', 'Bearer ' + this.$cookies.get('auth.admin_token'))
-            // await this.$auth.ctx.app.$axios.setHeader('Authorization', 'Bearer ' + this.$cookies.get('auth.admin_token'))
             this.$nuxt.$router.push('/auth/info')
             this.loading = false
           } catch (error) {

@@ -1,11 +1,10 @@
-export default async function ({ app, redirect, $auth }) {
+export default async function ({ app, redirect }) {
   try {
-    const user = await app.$cookies.get('admin')
-    console.log('user: ', user)
-    if (user) {
-      if (user.email === 'hadher@gmail.com') {
-        return redirect('/auth/signup')
-      }
+    const isAuth = await app.$cookies.get('isAuth')
+    if (isAuth) {
+      return redirect('/')
+    } else {
+      return redirect('/auth/login')
     }
   } catch (error) {
     console.log(error)

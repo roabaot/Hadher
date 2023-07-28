@@ -110,14 +110,6 @@ export default {
       loading: false
     }
   },
-  computed: {
-    company () {
-      return this.$cookies.get('company')
-    },
-    user () {
-      return this.$cookies.get('admin')
-    }
-  },
   methods: {
     isNumber (e) {
       let evt
@@ -138,30 +130,10 @@ export default {
       this.previewImg = URL.createObjectURL(this.uploadImg)
     },
     onMap () {
-      this.$refs.observer.validate().then(async (noErrors) => {
+      this.$refs.observer.validate().then((noErrors) => {
         if (noErrors) {
           try {
             this.loading = true
-            const data = {
-              company_id: this.company.id,
-              user_id: this.user.id,
-              name: this.address,
-              latitude: parseFloat(this.latitude),
-              longitude: parseFloat(this.longitude)
-            }
-            const res = await this.$axios.$post('/areas', data, {
-              headers: {
-                Authorization: this.$cookies.get('admin_token')
-              },
-              params: {
-                company_id: this.company.id,
-                user_id: this.user.id,
-                name: this.address,
-                latitude: parseFloat(this.latitude),
-                longitude: parseFloat(this.longitude)
-              }
-            })
-            console.log('res: ', res)
             this.$nuxt.$router.push('/auth/shift')
             this.loading = false
           } catch (error) {

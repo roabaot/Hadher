@@ -20,7 +20,7 @@
                     اسم الشركة
                   </label>
                   <h2 class="secondary--text title">
-                    {{ company.name }}
+                    شركة ترانس للتقنية
                   </h2>
                 </div>
                 <v-row class="ma-0">
@@ -30,7 +30,7 @@
                         رقم الهاتف
                       </label>
                       <h2 class="secondary--text title">
-                        {{ company.phone_number }}
+                        +967476547
                       </h2>
                     </div>
                   </v-col>
@@ -40,7 +40,7 @@
                         الإيميل
                       </label>
                       <h2 class="secondary--text title">
-                        {{ company.email }}
+                        test@test.com
                       </h2>
                     </div>
                   </v-col>
@@ -50,7 +50,7 @@
                         العنوان
                       </label>
                       <h2 class="secondary--text title">
-                        {{ company.address }}
+                        اليمن
                       </h2>
                     </div>
                   </v-col>
@@ -254,7 +254,8 @@
                       عنوان الشركة
                     </v-list-item-title>
                     <v-list-item-subtitle class="secondary--text title">
-                      {{ address }}
+                      اليمن ,حضرموت , المكلا ...الديس ,شارع الشهداء4848
+                      اليمن ,حضرموت , المكلا ...الديس ,شارع الشهداء4848
                     </v-list-item-subtitle>
                   </v-list-item-content>
                 </v-list-item>
@@ -325,7 +326,7 @@
                 عدد موظفين الشركة
               </label>
               <h2 class="secondary--text title">
-                <span class="ml-2">{{ staffNum }}</span><span>موظف</span>
+                <span class="ml-2">127</span><span>موظف</span>
               </h2>
             </v-card-text>
           </v-card>
@@ -343,47 +344,10 @@ import {
 } from 'vee-validate'
 setInteractionMode('eager')
 export default {
-  middleware: 'isVisit',
+  middleware: 'isAuth',
   components: {
     ValidationProvider,
     ValidationObserver
-  },
-  async asyncData ({ app, $axios }) {
-    try {
-      const _user = app.$cookies.get('admin')
-      console.log('token: ', app.$cookies.get('admin_token'))
-      const user = await $axios.$get(`/users/${_user.id}`, {
-        headers: {
-          Authorization: app.$cookies.get('admin_token')
-        }
-      })
-      const resUsers = await $axios.$get('/users', {
-        headers: {
-          Authorization: app.$cookies.get('admin_token')
-        }
-      })
-      console.log('users: ', resUsers)
-      // const _company = app.$cookies.get('company')
-      // console.log('_company: ', _company)
-      // const company = await $axios.$get(`/companies/${_company.id}`)
-      // console.log(company)
-      const { data } = await $axios.$get('/companies')
-      console.log('companies: ', data)
-      const company = data[data.length - 1]
-      console.log('company: ', company)
-      const shift = await $axios.$get('/companies')
-      console.log('shift: ', shift)
-      return {
-        company,
-        companyInfo: company,
-        address: company.address,
-        user: user.data,
-        staffNum: resUsers.data.length
-        // previewImg: `http://127.0.0.1:8000/${company.data.image}`
-      }
-    } catch (error) {
-      console.log(error)
-    }
   },
   data () {
     return {

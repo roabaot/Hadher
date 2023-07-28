@@ -100,7 +100,7 @@
                               class="rounded-lg subtitle-2"
                             />
                           </ValidationProvider>
-                          <ValidationProvider v-slot="{ errors }" name="كلمة المرور" rules="required|min:8|max:16">
+                          <!-- <ValidationProvider v-slot="{ errors }" name="كلمة المرور" rules="required|min:8|max:16">
                             <v-text-field
                               v-model="editedItem.password"
                               label="كلمة المرور"
@@ -109,10 +109,10 @@
                               :error-messages="errors"
                               class="rounded-lg subtitle-2"
                             />
-                          </ValidationProvider>
+                          </ValidationProvider> -->
                           <ValidationProvider v-slot="{ errors }" name="رقم الهاتف" rules="required|numeric">
                             <v-text-field
-                              v-model="editedItem.phone_number"
+                              v-model="editedItem.phoneNumber"
                               label="رقم الهاتف"
                               outlined
                               required
@@ -131,7 +131,7 @@
                               class="rounded-lg subtitle-2"
                             />
                           </ValidationProvider>
-                          <ValidationProvider v-slot="{ errors }" name="عنوان الشركة" rules="min:3|max:100">
+                          <!-- <ValidationProvider v-slot="{ errors }" name="عنوان الشركة" rules="min:3|max:100">
                             <v-text-field
                               v-model="editedItem.address"
                               label="عنوان الشركة"
@@ -140,7 +140,7 @@
                               required
                               class="rounded-lg subtitle-2"
                             />
-                          </ValidationProvider>
+                          </ValidationProvider> -->
                         </ValidationObserver>
 
                         <div class="my-3">
@@ -261,32 +261,15 @@ export default {
     ValidationProvider,
     ValidationObserver
   },
-  async asyncData ({ app, $axios }) {
-    try {
-      const token = await app.$cookies.get('admin_token')
-      console.log(token)
-      const { data } = await $axios.$get('/users', {
-        headers: {
-          Authorization: await token
-        }
-      })
-      console.log('users: ', data)
-
-      return {
-        staffs: data
-      }
-    } catch (error) {
-      console.log(error)
-    }
-  },
   data: () => ({
     dialog: false,
     infoDialog: false,
     dialogDelete: false,
+    staffs: [],
     headers: [
       { text: 'الموظف', align: 'center', value: 'name' },
       { text: 'الإيميل', align: 'center', value: 'email' },
-      { text: 'رقم الهاتف', align: 'center', value: 'phone_number' },
+      { text: 'رقم الهاتف', align: 'center', value: 'phoneNumber' },
       { text: '', value: 'actions', align: 'left', sortable: false }
     ],
     editedIndex: -1,
@@ -295,7 +278,7 @@ export default {
       name: '',
       password: '',
       email: '',
-      phone_number: '',
+      phoneNumber: '',
       address: ''
     },
     defaultItem: {
@@ -303,7 +286,7 @@ export default {
       name: '',
       password: '',
       email: '',
-      phone_number: '',
+      phoneNumber: '',
       address: ''
     },
     search: '',
@@ -332,7 +315,113 @@ export default {
     }
   },
 
+  mounted () {
+    this.initialize()
+  },
+
   methods: {
+    initialize () {
+      this.staffs = [
+        {
+          id: 1,
+          name: 'أحمد العكبري',
+          email: 'test@test.com',
+          phoneNumber: '+9645345343',
+          address: ''
+        },
+        {
+          id: 2,
+          name: 'حمزة العمودي',
+          email: 'test2@test.com',
+          phoneNumber: '+9645345343',
+          address: ''
+        },
+        {
+          id: 3,
+          name: 'سالم جابر',
+          email: 'test3@test.com',
+          phoneNumber: '+9645345343',
+          address: ''
+        },
+        {
+          id: 4,
+          name: 'خالد دلمخ',
+          email: 'test4@test.com',
+          phoneNumber: '+9645345343',
+          address: ''
+        },
+        {
+          id: 5,
+          name: 'نور أحمد',
+          email: 'test5@test.com',
+          phoneNumber: '+9645345343',
+          address: ''
+        },
+        {
+          id: 6,
+          name: 'زينب خالد',
+          email: 'test6@test.com',
+          phoneNumber: '+9645345343',
+          address: ''
+        },
+        {
+          id: 7,
+          name: 'يونس المعاري',
+          email: 'test7@test.com',
+          phoneNumber: '+9645345343',
+          address: ''
+        },
+        {
+          id: 8,
+          name: 'أحمد الشاطري',
+          email: 'test8@test.com',
+          phoneNumber: '+9645345343',
+          address: ''
+        },
+        {
+          id: 9,
+          name: 'حذيفة مديحج',
+          email: 'test9@test.com',
+          phoneNumber: '+9645345343',
+          address: ''
+        },
+        {
+          id: 10,
+          name: 'محمد الغامدي',
+          email: 'test10@test.com',
+          phoneNumber: '+9645345343',
+          address: ''
+        },
+        {
+          id: 11,
+          name: 'راحم الدوسري',
+          email: 'test11@test.com',
+          phoneNumber: '+9645345343',
+          address: ''
+        },
+        {
+          id: 12,
+          name: 'لؤي محمد',
+          email: 'test12@test.com',
+          phoneNumber: '+9645345343',
+          address: ''
+        },
+        {
+          id: 13,
+          name: 'خديجة محمد',
+          email: 'test13@test.com',
+          phoneNumber: '+9645345343',
+          address: ''
+        },
+        {
+          id: 14,
+          name: 'سعود الزهراني',
+          email: 'test14@test.com',
+          phoneNumber: '+9645345343',
+          address: ''
+        }
+      ]
+    },
     isNumber (e) {
       let evt
       if (e) {
@@ -360,14 +449,8 @@ export default {
       this.dialogDelete = true
     },
 
-    async deleteItemConfirm () {
+    deleteItemConfirm () {
       try {
-        const user = await this.$axios.$delete(`/users/${this.editedItem.id}`, {
-          headers: {
-            Authorization: this.$cookies.get('admin_token')
-          }
-        })
-        console.log(user)
         this.staffs.splice(this.editedIndex, 1)
         this.closeDelete()
       } catch (error) {
@@ -394,7 +477,7 @@ export default {
     },
 
     save () {
-      this.$refs.observer.validate().then(async (noErrors) => {
+      this.$refs.observer.validate().then((noErrors) => {
         if (noErrors) {
           try {
             const formData = new FormData()
@@ -402,23 +485,11 @@ export default {
               formData.set(key, this.editedItem[key])
             }
             if (this.editedIndex > -1) {
-              const res = await this.$axios.$patch(`/users/${this.editedItem.id}`, formData, {
-                headers: {
-                  Authorization: this.$cookies.get('admin_token')
-                }
-              })
-              console.log(res)
               Object.assign(this.staffs[this.editedIndex], this.editedItem)
             } else {
-              const res = await this.$axios.$post('/users', formData, {
-                headers: {
-                  Authorization: this.$cookies.get('admin_token')
-                }
-              })
-              console.log(res)
               this.info = this.editedItem
               this.infoDialog = true
-              await this.staffs.push(this.editedItem)
+              this.staffs.push(this.editedItem)
             }
             this.close()
           } catch (error) {

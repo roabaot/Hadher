@@ -12,7 +12,7 @@
 
                 <v-list-item-content>
                   <v-list-item-title class="secondary--text">
-                    {{ user.name }}
+                    {{ username }}
                   </v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
@@ -204,31 +204,13 @@ export default {
     ValidationProvider,
     ValidationObserver
   },
-  async asyncData ({ app, $axios, params }) {
-    try {
-      console.log(params)
-      const token = await app.$cookies.get('admin_token')
-      console.log(token)
-      const { data } = await $axios.$get(`/users/${params.id}`, {
-        headers: {
-          Authorization: await token
-        }
-      })
-      console.log('users: ', data)
-
-      return {
-        user: data
-      }
-    } catch (error) {
-      console.log(error)
-    }
-  },
   data () {
     return {
       fromMenu: false,
       fromDate: '',
       toMenu: false,
       toDate: '',
+      user: null,
       headers: [
         { text: 'التاريخ', value: 'date', align: 'center' },
         { text: 'وقت الحضور', value: 'start', align: 'center' },
@@ -239,42 +221,42 @@ export default {
       ],
       info: [
         {
-          date: '01/11/2023',
+          date: '07/11/2023',
           start: '8:00',
           end: '5:00',
           time: '9',
           status: 'حاضر'
         },
         {
-          date: '01/11/2023',
+          date: '06/11/2023',
           start: '8:00',
           end: '5:00',
           time: '9',
           status: 'إجازة'
         },
         {
-          date: '01/11/2023',
+          date: '05/11/2023',
           start: '8:00',
           end: '5:00',
           time: '9',
           status: 'غائب'
         },
         {
-          date: '01/11/2023',
+          date: '04/11/2023',
           start: '8:00',
           end: '5:00',
           time: '9',
           status: 'حاضر'
         },
         {
-          date: '01/11/2023',
+          date: '03/11/2023',
           start: '8:00',
           end: '5:00',
           time: '9',
           status: 'حاضر'
         },
         {
-          date: '01/11/2023',
+          date: '02/11/2023',
           start: '8:00',
           end: '5:00',
           time: '9',
@@ -317,7 +299,8 @@ export default {
           id: 3,
           text: 'غائب'
         }
-      ]
+      ],
+      staffs: []
     }
   },
   watch: {
@@ -325,7 +308,126 @@ export default {
       val || this.close()
     }
   },
+  computed: {
+    username () {
+      const _user = this.staffs.find((user) => {
+        console.log('u: ', user)
+        return +user.id === +this.$route.params.id
+      })
+      console.log('user: ', _user)
+      return _user?.name
+    }
+  },
+  mounted () {
+    this.initialize()
+  },
   methods: {
+    initialize () {
+      this.staffs = [
+        {
+          id: 1,
+          name: 'أحمد العكبري',
+          email: 'test@test.com',
+          phoneNumber: '+9645345343',
+          status: 'حاضر'
+        },
+        {
+          id: 2,
+          name: 'حمزة العمودي',
+          email: 'test2@test.com',
+          phoneNumber: '+9645345343',
+          status: 'حاضر'
+        },
+        {
+          id: 3,
+          name: 'سالم جابر',
+          email: 'test3@test.com',
+          phoneNumber: '+9645345343',
+          status: 'إجازة'
+        },
+        {
+          id: 4,
+          name: 'خالد دلمخ',
+          email: 'test4@test.com',
+          phoneNumber: '+9645345343',
+          status: 'حاضر'
+        },
+        {
+          id: 5,
+          name: 'نور أحمد',
+          email: 'test5@test.com',
+          phoneNumber: '+9645345343',
+          status: 'غائب'
+        },
+        {
+          id: 6,
+          name: 'زينب خالد',
+          email: 'test6@test.com',
+          phoneNumber: '+9645345343',
+          status: 'حاضر'
+        },
+        {
+          id: 7,
+          name: 'يونس المعاري',
+          email: 'test7@test.com',
+          phoneNumber: '+9645345343',
+          status: 'إجازة'
+        },
+        {
+          id: 8,
+          name: 'أحمد الشاطري',
+          email: 'test8@test.com',
+          phoneNumber: '+9645345343',
+          status: 'غائب'
+        },
+        {
+          id: 9,
+          name: 'حذيفة مديحج',
+          email: 'test9@test.com',
+          phoneNumber: '+9645345343',
+          status: 'غائب'
+        },
+        {
+          id: 10,
+          name: 'محمد الغامدي',
+          email: 'test10@test.com',
+          phoneNumber: '+9645345343',
+          status: 'حاضر'
+        },
+        {
+          id: 11,
+          name: 'راحم الدوسري',
+          email: 'test11@test.com',
+          phoneNumber: '+9645345343',
+          status: 'حاضر'
+        },
+        {
+          id: 12,
+          name: 'لؤي محمد',
+          email: 'test12@test.com',
+          phoneNumber: '+9645345343',
+          status: 'إجازة'
+        },
+        {
+          id: 13,
+          name: 'خديجة محمد',
+          email: 'test13@test.com',
+          phoneNumber: '+9645345343',
+          status: 'غائب'
+        },
+        {
+          id: 14,
+          name: 'سعود الزهراني',
+          email: 'test14@test.com',
+          phoneNumber: '+9645345343',
+          status: 'حاضر'
+        }
+      ]
+      this.user = this.staffs.find((user) => {
+        console.log('user: ', user)
+        return user.id === +this.$route.params.id
+      })
+    },
     getColor (status) {
       if (status === 'حاضر') {
         return {
@@ -369,21 +471,7 @@ export default {
         }
       })
     },
-    async addHoliday () {
-      try {
-        const user = await this.$axios.$post('/holidays', {
-          name: `إجازة ${this.fromDate}`,
-          holiday_date: this.fromDate,
-          user_id: this.$route.params.id
-        }, {
-          headers: {
-            Authorization: this.$cookies.get('admin_token')
-          }
-        })
-        console.log(user)
-      } catch (error) {
-        console.log(error)
-      }
+    addHoliday () {
     },
     saveAttendance () {
       this.$refs.attendance.validate().then(async (noErrors) => {

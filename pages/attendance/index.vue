@@ -34,6 +34,7 @@
                         label="تاريخ الإجازة"
                         background-color="#f5f7f7"
                         dense
+                        hide-details="auto"
                         readonly
                         v-bind="attrs"
                         v-on="on"
@@ -54,7 +55,7 @@
                     عدد الحضور
                   </div>
                   <div class="secondary--text title">
-                    3
+                    {{ attendancePeople }}
                   </div>
                 </div>
               </v-col>
@@ -278,24 +279,6 @@ export default {
     ValidationProvider,
     ValidationObserver
   },
-  async asyncData ({ app, $axios }) {
-    try {
-      const token = await app.$cookies.get('admin_token')
-      console.log(token)
-      const { data } = await $axios.$get('/users', {
-        headers: {
-          Authorization: await token
-        }
-      })
-      console.log('users: ', data)
-
-      return {
-        staffs: data
-      }
-    } catch (error) {
-      console.log(error)
-    }
-  },
   data: () => ({
     dialog: false,
     statusDialog: false,
@@ -348,7 +331,124 @@ export default {
     }
   },
 
+  mounted () {
+    this.initialize()
+  },
+
+  computed: {
+    attendancePeople () {
+      let count = 0
+      this.staffs.forEach((staff) => {
+        if (staff.status === 'حاضر') {
+          count += 1
+        }
+      })
+      return count
+    }
+  },
   methods: {
+    initialize () {
+      this.staffs = [
+        {
+          id: 1,
+          name: 'أحمد العكبري',
+          email: 'test@test.com',
+          phoneNumber: '+9645345343',
+          status: 'حاضر'
+        },
+        {
+          id: 2,
+          name: 'حمزة العمودي',
+          email: 'test2@test.com',
+          phoneNumber: '+9645345343',
+          status: 'حاضر'
+        },
+        {
+          id: 3,
+          name: 'سالم جابر',
+          email: 'test3@test.com',
+          phoneNumber: '+9645345343',
+          status: 'إجازة'
+        },
+        {
+          id: 4,
+          name: 'خالد دلمخ',
+          email: 'test4@test.com',
+          phoneNumber: '+9645345343',
+          status: 'حاضر'
+        },
+        {
+          id: 5,
+          name: 'نور أحمد',
+          email: 'test5@test.com',
+          phoneNumber: '+9645345343',
+          status: 'غائب'
+        },
+        {
+          id: 6,
+          name: 'زينب خالد',
+          email: 'test6@test.com',
+          phoneNumber: '+9645345343',
+          status: 'حاضر'
+        },
+        {
+          id: 7,
+          name: 'يونس المعاري',
+          email: 'test7@test.com',
+          phoneNumber: '+9645345343',
+          status: 'إجازة'
+        },
+        {
+          id: 8,
+          name: 'أحمد الشاطري',
+          email: 'test8@test.com',
+          phoneNumber: '+9645345343',
+          status: 'غائب'
+        },
+        {
+          id: 9,
+          name: 'حذيفة مديحج',
+          email: 'test9@test.com',
+          phoneNumber: '+9645345343',
+          status: 'غائب'
+        },
+        {
+          id: 10,
+          name: 'محمد الغامدي',
+          email: 'test10@test.com',
+          phoneNumber: '+9645345343',
+          status: 'حاضر'
+        },
+        {
+          id: 11,
+          name: 'راحم الدوسري',
+          email: 'test11@test.com',
+          phoneNumber: '+9645345343',
+          status: 'حاضر'
+        },
+        {
+          id: 12,
+          name: 'لؤي محمد',
+          email: 'test12@test.com',
+          phoneNumber: '+9645345343',
+          status: 'إجازة'
+        },
+        {
+          id: 13,
+          name: 'خديجة محمد',
+          email: 'test13@test.com',
+          phoneNumber: '+9645345343',
+          status: 'غائب'
+        },
+        {
+          id: 14,
+          name: 'سعود الزهراني',
+          email: 'test14@test.com',
+          phoneNumber: '+9645345343',
+          status: 'حاضر'
+        }
+      ]
+    },
     getColor (status) {
       if (status === 'حاضر') {
         return {
@@ -384,18 +484,7 @@ export default {
 
     addHoliday () {
       try {
-        this.staffs.forEach(async (user) => {
-          const holiday = await this.$axios.$post('/holidays', {
-            name: `إجازة ${this.date} لـ ${user.name}, بالتوقيت ${new Date()}`,
-            holiday_date: this.date,
-            user_id: user.id
-          }, {
-            headers: {
-              Authorization: this.$cookies.get('admin_token')
-            }
-          })
-          console.log(holiday)
-        })
+        this.date = ''
       } catch (error) {
         console.log(error)
       }

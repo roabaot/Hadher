@@ -74,7 +74,7 @@ import {
 setInteractionMode('eager')
 export default {
   layout: 'none',
-  middleware: 'isAdminData',
+  middleware: 'isAuth',
   components: {
     ValidationProvider,
     ValidationObserver
@@ -89,7 +89,7 @@ export default {
   },
   methods: {
     onLogin () {
-      this.$refs.observer.validate().then(async (noErrors) => {
+      this.$refs.observer.validate().then((noErrors) => {
         if (noErrors) {
           try {
             this.loading = true
@@ -98,24 +98,7 @@ export default {
               password: this.password
             }
             console.log(data)
-            // const login = await this.$auth.loginWith('local', {
-            //   data
-            // })
-            const res = await this.$axios.$get('/login', { auth: data })
-            this.$cookies.set('admin', res.data)
-            localStorage.setItem('admin', res.data)
-            this.$cookies.set('admin_token', 'Bearer ' + res.access_token)
-            localStorage.setItem('admin_token', 'Bearer ' + res.access_token)
-            if (this.username === 'hadher@gmail.com' && this.password === '12345678') {
-              // await this.$auth.$storage.setUniversal('admin', res.data, true)
-              // await this.$auth.$storage.setUniversal('admin_token', 'Bearer ' + res.access_token, true)
-              // await this.$axios.setHeader('Authorization', 'Bearer ' + res.access_token)
-              // await this.$auth.ctx.app.$axios.setHeader('Authorization', 'Bearer ' + res.access_token)
-              this.$nuxt.$router.push('/auth/signup')
-            } else {
-              this.$nuxt.$router.push('/')
-            }
-            console.log(res)
+            this.$nuxt.$router.push('/')
             this.loading = false
           } catch (error) {
             console.log(error)
