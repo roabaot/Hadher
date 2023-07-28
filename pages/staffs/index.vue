@@ -54,7 +54,7 @@
                     </span>
                   </v-btn>
                 </template>
-                <v-card height="calc(100vh - 62px)" class="d-flex flex-column overflow-hidden">
+                <v-card max-height="calc(100vh - 62px)" class="d-flex flex-column overflow-hidden">
                   <v-card-title>
                     <v-btn
                       icon
